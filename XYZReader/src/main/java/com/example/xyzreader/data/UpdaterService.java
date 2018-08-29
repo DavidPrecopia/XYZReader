@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class UpdaterService extends IntentService {
     private static final String TAG = "UpdaterService";
 
@@ -39,7 +41,7 @@ public class UpdaterService extends IntentService {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
-            Log.w(TAG, "Not online, not refreshing.");
+            Timber.w("Not online, not refreshing.");
             return;
         }
 
@@ -47,7 +49,7 @@ public class UpdaterService extends IntentService {
                 new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, true));
 
         // Don't even inspect the intent, we only do one thing, and that's fetch content.
-        ArrayList<ContentProviderOperation> cpo = new ArrayList<ContentProviderOperation>();
+        ArrayList<ContentProviderOperation> cpo = new ArrayList<>();
 
         Uri dirUri = ItemsContract.Items.buildDirUri();
 
@@ -77,7 +79,7 @@ public class UpdaterService extends IntentService {
             getContentResolver().applyBatch(ItemsContract.CONTENT_AUTHORITY, cpo);
 
         } catch (JSONException | RemoteException | OperationApplicationException e) {
-            Log.e(TAG, "Error updating content.", e);
+            Timber.e(e, "Error updating content.");
         }
 
         sendStickyBroadcast(
