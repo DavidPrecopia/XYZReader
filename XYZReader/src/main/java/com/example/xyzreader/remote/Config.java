@@ -17,7 +17,6 @@ public class Config {
             // TODO: throw a real error
             Log.e(TAG, "Please check your internet connection.");
         }
-
         BASE_URL = url;
     }
 }
