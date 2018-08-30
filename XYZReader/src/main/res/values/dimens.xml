@@ -14,4 +14,5 @@
 
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">@dimen/margin_normal</dimen>
+    <dimen name="elevation_card_view">6dp</dimen>
 </resources>

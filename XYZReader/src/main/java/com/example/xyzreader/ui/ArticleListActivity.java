@@ -200,7 +200,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         ViewHolder(View view) {
             super(view);
-            thumbnailView = view.findViewById(R.id.thumbnail);
+            thumbnailView = view.findViewById(R.id.iv_thumbnail);
             titleView = view.findViewById(R.id.article_title);
             subtitleView = view.findViewById(R.id.article_subtitle);
         }
