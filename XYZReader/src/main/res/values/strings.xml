@@ -6,7 +6,12 @@
     <string name="content_description_app_logo">This app\'s logo</string>
     <string name="content_description_article_thumbnail">Article\'s thumbnail</string>
 
+
+    <!--fragment_article_detail-->
+    <string name="content_description_fab_share">Share</string>
+
+
+
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
-    <string name="action_share">Share</string>
 </resources>

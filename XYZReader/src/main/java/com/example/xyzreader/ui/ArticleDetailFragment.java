@@ -6,19 +6,15 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
@@ -44,25 +40,12 @@ public class ArticleDetailFragment extends Fragment implements
 
     private FragmentArticleDetailBinding binding;
 
-
-    private static final String TAG = "ArticleDetailFragment";
-
     public static final String ARG_ITEM_ID = "item_id";
-    private static final float PARALLAX_FACTOR = 1.25f;
 
     private Cursor mCursor;
     private long mItemId;
-    private int mMutedColor = 0xFF333333;
-    private ObservableScrollView mScrollView;
-    private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
-    private ColorDrawable mStatusBarColorDrawable;
 
-    private int mTopInset;
-    private View mPhotoContainerView;
-    private ImageView mPhotoView;
-    private int mScrollY;
     private boolean mIsCard = false;
-    private int mStatusBarFullOpacityBottom;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -94,14 +77,14 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);
-        mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
-                R.dimen.detail_card_top_margin);
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
 
         // In support library r8, calling initLoader for a fragment in a FragmentPagerAdapter in
         // the fragment's onCreate may cause the same LoaderManager to be dealt to multiple
@@ -115,87 +98,33 @@ public class ArticleDetailFragment extends Fragment implements
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_article_detail, container, false);
 
-        mDrawInsetsFrameLayout = binding.drawInsetsFrameLayout;
-        mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
-            @Override
-            public void onInsetsChanged(Rect insets) {
-                mTopInset = insets.top;
-            }
-        });
-
-        mScrollView = binding.getRoot().findViewById(R.id.scrollview);
-        mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-            @Override
-            public void onScrollChanged() {
-                mScrollY = mScrollView.getScrollY();
-                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
-                updateStatusBar();
-            }
-        });
-
-        mPhotoView = binding.photo;
-
-        mPhotoContainerView = binding.photoContainer;
-
-        mStatusBarColorDrawable = new ColorDrawable(0);
 
         binding.shareFab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
                         .setType("text/plain")
                         .setText("Some sample text")
-                        .getIntent(), getString(R.string.action_share)))
+                        .getIntent(), getString(R.string.content_description_fab_share)))
         );
 
         bindViews();
-        updateStatusBar();
         return binding.getRoot();
     }
 
-    private void updateStatusBar() {
-        int color = 0;
-        if (mPhotoView != null && mTopInset != 0 && mScrollY > 0) {
-            float f = progress(mScrollY,
-                    mStatusBarFullOpacityBottom - mTopInset * 3,
-                    mStatusBarFullOpacityBottom - mTopInset);
-            color = Color.argb((int) (255 * f),
-                    (int) (Color.red(mMutedColor) * 0.9),
-                    (int) (Color.green(mMutedColor) * 0.9),
-                    (int) (Color.blue(mMutedColor) * 0.9));
-        }
-        mStatusBarColorDrawable.setColor(color);
-        mDrawInsetsFrameLayout.setInsetBackground(mStatusBarColorDrawable);
-    }
 
-    static float progress(float v, float min, float max) {
-        return constrain((v - min) / (max - min), 0, 1);
-    }
 
-    static float constrain(float val, float min, float max) {
-        if (val < min) {
-            return min;
-        } else if (val > max) {
-            return max;
-        } else {
-            return val;
-        }
-    }
 
     private Date parsePublishedDate() {
         try {
             String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
             return dateFormat.parse(date);
         } catch (ParseException ex) {
-            Log.e(TAG, ex.getMessage());
-            Log.i(TAG, "passing today's date");
+            Timber.e(ex);
+            Timber.i("passing today's date");
             return new Date();
         }
     }
 
     private void bindViews() {
-        if (binding.getRoot() == null) {
-            return;
-        }
-
         TextView titleView = binding.getRoot().findViewById(R.id.article_title);
         TextView bylineView = binding.getRoot().findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
@@ -227,9 +156,9 @@ public class ArticleDetailFragment extends Fragment implements
             }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
             // TODO Add placeholder && error images
-            GlideApp.with(binding.photo)
+            GlideApp.with(binding.ivDetailThumbnail)
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
-                    .into(binding.photo);
+                    .into(binding.ivDetailThumbnail);
         } else {
             binding.getRoot().setVisibility(View.GONE);
             titleView.setText("N/A");
