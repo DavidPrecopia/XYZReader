@@ -61,6 +61,8 @@ public class ArticleListActivity extends AppCompatActivity implements
         binding = DataBindingUtil.setContentView(this, R.layout.activity_article_list);
 
         setSupportActionBar(binding.toolbar);
+        // Using a logo image instead
+        getSupportActionBar().setTitle("");
 
         mSwipeRefreshLayout = binding.swipeRefreshLayout;
         mRecyclerView = binding.recyclerView;
