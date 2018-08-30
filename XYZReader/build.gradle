@@ -20,6 +20,9 @@ android {
 }
 
 dependencies {
+    // I'm using support version 28.0.0-rc01 because that is the
+    // latest version of design library.
+
     implementation "com.android.support:support-compat:$androidSupportVersion"
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:palette-v7:$androidSupportVersion"

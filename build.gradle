@@ -14,6 +14,9 @@ allprojects {
         google()
     }
     ext {
+        // I'm using support version 28.0.0-rc01 because that is the
+        // latest version of design library.
+        // See XYZReader's build.gradle file.
         androidSupportVersion = "28.0.0-rc01"
     }
 }
