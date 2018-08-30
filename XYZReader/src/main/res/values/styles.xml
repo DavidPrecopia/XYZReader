@@ -21,4 +21,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="ListItemArticleTextView">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:minLines">2</item>
+    </style>
 </resources>

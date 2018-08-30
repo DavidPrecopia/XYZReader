@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.CardView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_medium"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?selectableItemBackground"
-        app:cardElevation="@dimen/elevation_card_view">
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:layout_marginEnd="@dimen/margin_normal"
+        android:layout_marginStart="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_medium">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:background="@color/photo_placeholder"
+            android:contentDescription="@string/content_description_article_thumbnail"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/logo" />
 
-            <com.example.xyzreader.ui.DynamicHeightNetworkImageView
-                android:id="@+id/iv_thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@color/photo_placeholder"
-                android:scaleType="centerCrop" />
+        <TextView
+            android:id="@+id/article_title"
+            style="@style/ListItemArticleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="This is an article title" />
 
-            <TextView
-                android:id="@+id/article_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_normal"
-                android:layout_marginStart="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:minLines="2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail" />
+        <TextView
+            android:id="@+id/article_subtitle"
+            style="@style/ListItemArticleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/article_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/article_title"
+            app:layout_constraintTop_toBottomOf="@+id/article_title"
+            tools:text="August 28th, 2017" />
+    </android.support.constraint.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/article_subtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_medium"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:minLines="2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/article_title"
-                app:layout_constraintStart_toStartOf="@+id/article_title"
-                app:layout_constraintTop_toBottomOf="@+id/article_title" />
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v7.widget.CardView>
 </layout>
 
