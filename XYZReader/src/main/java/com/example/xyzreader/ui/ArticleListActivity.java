@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,7 +17,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
+import com.example.xyzreader.databinding.ListItemArticleBinding;
+import com.example.xyzreader.util.GlideApp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,7 +130,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
 
-    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+    private class Adapter extends RecyclerView.Adapter<Adapter.ArticleViewHolder> {
         private Cursor mCursor;
 
         Adapter(Cursor cursor) {
@@ -142,12 +145,14 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
-            final ViewHolder vh = new ViewHolder(view);
-            view.setOnClickListener(view1 -> startActivity(new Intent(Intent.ACTION_VIEW,
-                    ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())))));
-            return vh;
+        public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            ListItemArticleBinding binding = DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.getContext()), R.layout.list_item_article, parent, false
+            );
+            final ArticleViewHolder viewHolder = new ArticleViewHolder(binding);
+            binding.getRoot().setOnClickListener(view1 -> startActivity(new Intent(Intent.ACTION_VIEW,
+                    ItemsContract.Items.buildItemUri(getItemId(viewHolder.getAdapterPosition())))));
+            return viewHolder;
         }
 
         private Date parsePublishedDate() {
@@ -162,7 +167,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             holder.titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
@@ -178,31 +183,45 @@ public class ArticleListActivity extends AppCompatActivity implements
             } else {
                 holder.subtitleView.setText(Html.fromHtml(
                         outputFormat.format(publishedDate)
-                        + "<br/>" + " by "
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR)));
+                                + "<br/>" + " by "
+                                + mCursor.getString(ArticleLoader.Query.AUTHOR)));
             }
-            holder.thumbnailView.setImageUrl(
-                    mCursor.getString(ArticleLoader.Query.THUMB_URL),
-                    ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
-            holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+
+
+            holder.bindView();
         }
 
         @Override
         public int getItemCount() {
             return mCursor.getCount();
         }
-    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public DynamicHeightNetworkImageView thumbnailView;
-        public TextView titleView;
-        public TextView subtitleView;
 
-        ViewHolder(View view) {
-            super(view);
-            thumbnailView = view.findViewById(R.id.iv_thumbnail);
-            titleView = view.findViewById(R.id.article_title);
-            subtitleView = view.findViewById(R.id.article_subtitle);
+        class ArticleViewHolder extends RecyclerView.ViewHolder {
+
+            private ListItemArticleBinding binding;
+
+            private TextView titleView;
+            private TextView subtitleView;
+
+            ArticleViewHolder(ListItemArticleBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+
+                titleView = binding.articleTitle;
+                subtitleView = binding.articleSubtitle;
+            }
+
+            private void bindView() {
+                bindThumbnail();
+            }
+
+            // TODO Add placeholder && error image
+            private void bindThumbnail() {
+                GlideApp.with(binding.ivThumbnail)
+                        .load(mCursor.getString(ArticleLoader.Query.THUMB_URL))
+                        .into(binding.ivThumbnail);
+            }
         }
     }
 }
