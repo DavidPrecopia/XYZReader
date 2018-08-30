@@ -10,7 +10,8 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height_fragment_detail"
-            app:elevation="@dimen/elevation_app_bar">
+            app:elevation="@dimen/elevation_app_bar"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"

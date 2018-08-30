@@ -39,8 +39,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/margin_normal"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_normal"
                 android:scrollbarStyle="outsideOverlay"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </android.support.v4.widget.SwipeRefreshLayout>
