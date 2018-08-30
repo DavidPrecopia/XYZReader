@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -26,11 +27,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.databinding.FragmentArticleDetailBinding;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import timber.log.Timber;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -39,6 +43,11 @@ import java.util.GregorianCalendar;
  */
 public class ArticleDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+
+    private FragmentArticleDetailBinding binding;
+
+
     private static final String TAG = "ArticleDetailFragment";
 
     public static final String ARG_ITEM_ID = "item_id";
@@ -46,7 +55,6 @@ public class ArticleDetailFragment extends Fragment implements
 
     private Cursor mCursor;
     private long mItemId;
-    private View mRootView;
     private int mMutedColor = 0xFF333333;
     private ObservableScrollView mScrollView;
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
@@ -108,8 +116,9 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        mDrawInsetsFrameLayout = mRootView.findViewById(R.id.draw_insets_frame_layout);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_article_detail, container, false);
+
+        mDrawInsetsFrameLayout = binding.drawInsetsFrameLayout;
         mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
             @Override
             public void onInsetsChanged(Rect insets) {
@@ -117,7 +126,7 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mScrollView = mRootView.findViewById(R.id.scrollview);
+        mScrollView = binding.getRoot().findViewById(R.id.scrollview);
         mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
             @Override
             public void onScrollChanged() {
@@ -127,12 +136,13 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mPhotoView = mRootView.findViewById(R.id.photo);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
+        mPhotoView = binding.photo;
+
+        mPhotoContainerView = binding.photoContainer;
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
-        mRootView.findViewById(R.id.share_fab).setOnClickListener(view ->
+        binding.shareFab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
                         .setType("text/plain")
                         .setText("Some sample text")
@@ -141,7 +151,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         bindViews();
         updateStatusBar();
-        return mRootView;
+        return binding.getRoot();
     }
 
     private void updateStatusBar() {
@@ -185,19 +195,19 @@ public class ArticleDetailFragment extends Fragment implements
     }
 
     private void bindViews() {
-        if (mRootView == null) {
+        if (binding.getRoot() == null) {
             return;
         }
 
-        TextView titleView = mRootView.findViewById(R.id.article_title);
-        TextView bylineView = mRootView.findViewById(R.id.article_byline);
+        TextView titleView = binding.getRoot().findViewById(R.id.article_title);
+        TextView bylineView = binding.getRoot().findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = mRootView.findViewById(R.id.article_body);
+        TextView bodyView = binding.getRoot().findViewById(R.id.article_body);
 
         if (mCursor != null) {
-            mRootView.setAlpha(0);
-            mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
+            binding.getRoot().setAlpha(0);
+            binding.getRoot().setVisibility(View.VISIBLE);
+            binding.getRoot().animate().alpha(1);
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
@@ -228,7 +238,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 Palette p = Palette.generate(bitmap, 12);
                                 mMutedColor = p.getDarkMutedColor(0xFF333333);
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
+                                binding.getRoot().findViewById(R.id.meta_bar)
                                         .setBackgroundColor(mMutedColor);
                                 updateStatusBar();
                             }
@@ -240,7 +250,7 @@ public class ArticleDetailFragment extends Fragment implements
                         }
                     });
         } else {
-            mRootView.setVisibility(View.GONE);
+            binding.getRoot().setVisibility(View.GONE);
             titleView.setText("N/A");
             bylineView.setText("N/A");
             bodyView.setText("N/A");
@@ -263,7 +273,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         mCursor = cursor;
         if (mCursor != null && !mCursor.moveToFirst()) {
-            Log.e(TAG, "Error reading item detail cursor");
+            Timber.e("Error reading item detail cursor");
             mCursor.close();
             mCursor = null;
         }
