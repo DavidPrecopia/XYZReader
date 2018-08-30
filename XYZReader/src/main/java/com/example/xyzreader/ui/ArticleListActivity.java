@@ -14,7 +14,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
+import com.example.xyzreader.databinding.ActivityArticleListBinding;
 import com.example.xyzreader.databinding.ListItemArticleBinding;
 import com.example.xyzreader.util.GlideApp;
 
@@ -44,9 +44,8 @@ import timber.log.Timber;
 public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String TAG = ArticleListActivity.class.toString();
+    private ActivityArticleListBinding binding;
 
-    private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
@@ -59,15 +58,16 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article_list);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_article_list);
 
-        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(binding.toolbar);
 
-        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout = binding.swipeRefreshLayout;
+        mRecyclerView = binding.recyclerView;
 
-        mRecyclerView = findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
 
+        // TODO Don't auto refresh
         if (savedInstanceState == null) {
             refresh();
         }
