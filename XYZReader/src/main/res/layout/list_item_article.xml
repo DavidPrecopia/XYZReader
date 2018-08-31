@@ -7,16 +7,12 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_medium"
-        android:layout_marginEnd="@dimen/margin_normal"
-        android:layout_marginStart="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_medium">
+        android:layout_margin="@dimen/margin_medium">
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="100dp"
-            android:layout_height="0dp"
-            android:background="@color/photo_placeholder"
+            android:layout_width="125dp"
+            android:layout_height="100dp"
             android:contentDescription="@string/content_description_article_thumbnail"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,33 +21,44 @@
             tools:src="@drawable/logo" />
 
         <TextView
-            android:id="@+id/article_title"
-            style="@style/ListItemArticleTextView"
+            android:id="@+id/title"
+            android:minLines="2"
+            android:maxLines="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_medium"
             android:layout_marginStart="@dimen/margin_medium"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="This is an article title" />
+            tools:text="This is the title of an article" />
 
         <TextView
-            android:id="@+id/article_subtitle"
+            android:id="@+id/author"
             style="@style/ListItemArticleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium"
-            android:layout_marginTop="@dimen/margin_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/article_title"
+            app:layout_constraintEnd_toEndOf="@id/title"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/article_title"
-            app:layout_constraintTop_toBottomOf="@+id/article_title"
-            tools:text="August 28th, 2017" />
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintBottom_toTopOf="@id/published_date"
+            tools:text="Cory Doctorow" />
+
+        <TextView
+            android:id="@+id/published_date"
+            style="@style/ListItemArticleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/title"
+            tools:text="August 18th, 2017" />
     </android.support.constraint.ConstraintLayout>
 
 </layout>
-

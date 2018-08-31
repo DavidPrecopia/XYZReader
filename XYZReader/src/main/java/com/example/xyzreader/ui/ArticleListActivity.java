@@ -12,13 +12,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -31,7 +35,6 @@ import com.example.xyzreader.util.GlideApp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import timber.log.Timber;
 
@@ -50,10 +53,6 @@ public class ArticleListActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
-    // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         getLoaderManager().initLoader(0, null, this);
 
-        // TODO Don't auto refresh
         if (savedInstanceState == null) {
             refresh();
         }
@@ -92,6 +90,23 @@ public class ArticleListActivity extends AppCompatActivity implements
         unregisterReceiver(mRefreshingReceiver);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_refresh:
+                Toast.makeText(this, "Refresh menu item selected", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private boolean mIsRefreshing = false;
 
@@ -120,10 +135,15 @@ public class ArticleListActivity extends AppCompatActivity implements
         Adapter adapter = new Adapter(cursor);
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
-        int columnCount = getResources().getInteger(R.integer.list_column_count);
-        StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(sglm);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                mRecyclerView.getContext(),
+                linearLayoutManager.getOrientation()
+        );
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        mRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     @Override
@@ -172,23 +192,15 @@ public class ArticleListActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             holder.titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+
+            holder.author.setText(mCursor.getString(ArticleLoader.Query.AUTHOR));
+
             Date publishedDate = parsePublishedDate();
-            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-
-                holder.subtitleView.setText(Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                publishedDate.getTime(),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()
-                                + "<br/>" + " by "
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)));
-            } else {
-                holder.subtitleView.setText(Html.fromHtml(
-                        outputFormat.format(publishedDate)
-                                + "<br/>" + " by "
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)));
-            }
-
+            holder.publishedDate.setText(Html.fromHtml(
+                    DateUtils.getRelativeTimeSpanString(
+                            publishedDate.getTime(),
+                            System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+                            DateUtils.FORMAT_ABBREV_ALL).toString()));
 
             holder.bindView();
         }
@@ -204,14 +216,16 @@ public class ArticleListActivity extends AppCompatActivity implements
             private ListItemArticleBinding binding;
 
             private TextView titleView;
-            private TextView subtitleView;
+            private TextView author;
+            private TextView publishedDate;
 
             ArticleViewHolder(ListItemArticleBinding binding) {
                 super(binding.getRoot());
                 this.binding = binding;
 
-                titleView = binding.articleTitle;
-                subtitleView = binding.articleSubtitle;
+                titleView = binding.title;
+                author = binding.author;
+                publishedDate = binding.publishedDate;
             }
 
             private void bindView() {

@@ -1,17 +1,12 @@
 <resources>
     <string name="app_name">XYZ Reader</string>
-    <string name="welcome_xyz_reader">Welcome to XYZ Reader!</string>
+
+    <string name="menu_item_refresh_title">Refresh</string>
 
     <!--activity_article_list-->
     <string name="content_description_app_logo">This app\'s logo</string>
     <string name="content_description_article_thumbnail">Article\'s thumbnail</string>
 
-
     <!--fragment_article_detail-->
     <string name="content_description_fab_share">Share</string>
-
-
-
-    <string name="action_refresh">Refresh</string>
-    <string name="action_settings">Settings</string>
 </resources>

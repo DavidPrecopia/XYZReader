@@ -26,7 +26,6 @@ import com.example.xyzreader.util.GlideApp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import timber.log.Timber;
 
@@ -38,10 +37,9 @@ import timber.log.Timber;
 public class ArticleDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String ARGUMENT_ITEM_ID = "item_id";
 
     private FragmentArticleDetailBinding binding;
-
-    public static final String ARG_ITEM_ID = "item_id";
 
     private Cursor mCursor;
     private long mItemId;
@@ -49,10 +47,6 @@ public class ArticleDetailFragment extends Fragment implements
     private boolean mIsCard = false;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
-    // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,7 +57,7 @@ public class ArticleDetailFragment extends Fragment implements
 
     public static ArticleDetailFragment newInstance(long itemId) {
         Bundle arguments = new Bundle();
-        arguments.putLong(ARG_ITEM_ID, itemId);
+        arguments.putLong(ARGUMENT_ITEM_ID, itemId);
         ArticleDetailFragment fragment = new ArticleDetailFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -72,23 +66,15 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItemId = getArguments().getLong(ARG_ITEM_ID);
-        }
-
-        mIsCard = getResources().getBoolean(R.bool.detail_is_card);
+        mItemId = getArguments().getLong(ARGUMENT_ITEM_ID);
+        mIsCard = getResources().getBoolean(R.bool.is_master_detail_layout);
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        setUpActionBar();
 
         // In support library r8, calling initLoader for a fragment in a FragmentPagerAdapter in
         // the fragment's onCreate may cause the same LoaderManager to be dealt to multiple
@@ -97,79 +83,77 @@ public class ArticleDetailFragment extends Fragment implements
         getLoaderManager().initLoader(0, null, this);
     }
 
+    private void setUpActionBar() {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_article_detail, container, false);
 
+        setUpFab();
+        bindViews();
 
-        binding.shareFab.setOnClickListener(view ->
+        return binding.getRoot();
+    }
+
+    private void setUpFab() {
+        binding.speedDial.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
                         .setType("text/plain")
                         .setText("Some sample text")
                         .getIntent(), getString(R.string.content_description_fab_share)))
         );
-
-        bindViews();
-        return binding.getRoot();
     }
 
-
-
-
-    private Date parsePublishedDate() {
-        try {
-            String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
-            return dateFormat.parse(date);
-        } catch (ParseException ex) {
-            Timber.e(ex);
-            Timber.i("passing today's date");
-            return new Date();
-        }
-    }
 
     private void bindViews() {
-        TextView titleView = binding.getRoot().findViewById(R.id.article_title);
-        TextView bylineView = binding.getRoot().findViewById(R.id.article_byline);
+        TextView bylineView = binding.publishedDate;
         bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = binding.getRoot().findViewById(R.id.article_body);
+        TextView bodyView = binding.articleBody;
 
         if (mCursor != null) {
-            binding.getRoot().setAlpha(0);
-            binding.getRoot().setVisibility(View.VISIBLE);
-            binding.getRoot().animate().alpha(1);
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-            Date publishedDate = parsePublishedDate();
-            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-                bylineView.setText(Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                publishedDate.getTime(),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()
-                                + " by <font color='#ffffff'>"
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
-                                + "</font>"));
+            binding.collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
 
-            } else {
-                // If date is before 1902, just show the string
-                bylineView.setText(Html.fromHtml(
-                        outputFormat.format(publishedDate) + " by <font color='#ffffff'>"
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
-                                + "</font>"));
+            binding.author.setText(mCursor.getString(ArticleLoader.Query.AUTHOR));
 
-            }
+            Date publishedDate = getPublishedDate();
+            bylineView.setText(Html.fromHtml(
+                    DateUtils.getRelativeTimeSpanString(
+                            publishedDate.getTime(),
+                            System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+                            DateUtils.FORMAT_ABBREV_ALL).toString()
+            ));
+
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+
             // TODO Add placeholder && error images
             GlideApp.with(binding.ivDetailThumbnail)
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
                     .into(binding.ivDetailThumbnail);
         } else {
-            binding.getRoot().setVisibility(View.GONE);
-            titleView.setText("N/A");
+            binding.collapsingToolbarLayout.setTitle("N/A");
             bylineView.setText("N/A");
             bodyView.setText("N/A");
         }
     }
+
+    private Date getPublishedDate() {
+        try {
+            return dateFormat.parse(
+                    mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE)
+            );
+        } catch (ParseException e) {
+            Timber.e("Error parsing data - passing today's date instead.\n%s", e.getMessage());
+            return new Date();
+        }
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
