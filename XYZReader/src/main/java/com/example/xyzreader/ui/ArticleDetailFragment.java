@@ -132,9 +132,11 @@ public class ArticleDetailFragment extends Fragment implements
 
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
 
-            // TODO Add placeholder && error images
+
             GlideApp.with(binding.ivDetailThumbnail)
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .placeholder(R.drawable.ic_image_icon_black_48dp)
+                    .error(R.drawable.ic_image_icon_black_48dp)
                     .into(binding.ivDetailThumbnail);
         } else {
             binding.collapsingToolbarLayout.setTitle("N/A");

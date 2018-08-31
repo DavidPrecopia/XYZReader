@@ -232,10 +232,11 @@ public class ArticleListActivity extends AppCompatActivity implements
                 bindThumbnail();
             }
 
-            // TODO Add placeholder && error image
             private void bindThumbnail() {
                 GlideApp.with(binding.ivThumbnail)
                         .load(mCursor.getString(ArticleLoader.Query.THUMB_URL))
+                        .placeholder(R.drawable.ic_image_icon_black_48dp)
+                        .error(R.drawable.ic_image_icon_black_48dp)
                         .into(binding.ivThumbnail);
             }
         }
