@@ -34,7 +34,7 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        this.network = NetworkClient.getInstance();
+        this.network = NetworkClient.getInstance(application);
         this.networkStatus = NetworkStatusUtil.getInstance(application);
         this.errorMsgNoNetwork = application.getString(R.string.error_msg_no_network_connection);
         this.articlesDao = ArticlesDatabase.getInstance(application).getArticlesDap();
