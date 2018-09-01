@@ -22,7 +22,7 @@ android {
 
 dependencies {
     // I'm using support version 28.0.0-rc01 because that is the
-    // latest version of design library.
+    // latest version of design support library.
 
     implementation "com.android.support:support-compat:$androidSupportVersion"
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
@@ -51,6 +51,15 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.1'
 
+    
+    //Room
+    implementation "android.arch.persistence.room:runtime:$architectureComponentsVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$architectureComponentsVersion"
+    implementation "android.arch.persistence.room:rxjava2:$architectureComponentsVersion"
+    // ViewModel and LiveData
+    implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"
+    implementation "android.arch.lifecycle:common-java8:$architectureComponentsVersion"
+    
 
     // OkHttp
     implementation 'com.squareup.okhttp3:okhttp:3.1.2'

@@ -1,14 +1,24 @@
 package com.example.xyzreader.datamodel;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+import com.example.xyzreader.model.DatabaseContract;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = DatabaseContract.TABLE_NAME_ARTICLES)
 public class Article{
 
+	@PrimaryKey
+	@ColumnInfo(name = DatabaseContract.COLUMN_NAME_ID)
 	private int id;
 
 	private String title;
 	private String author;
+
 	@SerializedName("published_date")
+	@ColumnInfo(name = DatabaseContract.COLUMN_NAME_PUBLISHED_DATE)
 	private String publishedDate;
 
 	private String body;
