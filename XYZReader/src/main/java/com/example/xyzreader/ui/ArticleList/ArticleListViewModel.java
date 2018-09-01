@@ -8,8 +8,8 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.datamodel.Article;
-import com.example.xyzreader.network.INetworkClientContract;
-import com.example.xyzreader.network.NetworkClient;
+import com.example.xyzreader.model.IModelContract;
+import com.example.xyzreader.model.Model;
 import com.example.xyzreader.util.NetworkStatusUtil;
 
 import java.util.List;
@@ -25,14 +25,14 @@ final class ArticleListViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Article>> articlesList;
     private final MutableLiveData<String> error;
 
-    private final INetworkClientContract network;
+    private final IModelContract model;
     private final NetworkStatusUtil networkStatus;
 
     ArticleListViewModel(Application application) {
         super(application);
         this.articlesList = new MutableLiveData<>();
         this.error = new MutableLiveData<>();
-        this.network = NetworkClient.getInstance();
+        this.model = Model.getInstance(application);
         this.networkStatus = NetworkStatusUtil.getInstance(application);
         init();
     }
@@ -51,7 +51,7 @@ final class ArticleListViewModel extends AndroidViewModel {
 
     @SuppressLint("CheckResult")
     private void queryNetwork() {
-        network.getArticles()
+        model.getArticles()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(observer());

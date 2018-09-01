@@ -1,4 +1,4 @@
-package com.example.xyzreader.model;
+package com.example.xyzreader.database;
 
 public final class DatabaseContract {
     static final String DATABASE_NAME = "offline_articles.db";

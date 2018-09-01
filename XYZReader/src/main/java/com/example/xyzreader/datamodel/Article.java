@@ -4,7 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.example.xyzreader.model.DatabaseContract;
+import com.example.xyzreader.database.DatabaseContract;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = DatabaseContract.TABLE_NAME_ARTICLES)

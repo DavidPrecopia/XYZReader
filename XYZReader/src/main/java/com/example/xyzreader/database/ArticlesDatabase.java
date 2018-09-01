@@ -1,4 +1,4 @@
-package com.example.xyzreader.model;
+package com.example.xyzreader.database;
 
 import android.app.Application;
 import android.arch.persistence.room.Database;
@@ -12,7 +12,7 @@ public abstract class ArticlesDatabase extends RoomDatabase {
 
     private static ArticlesDatabase database;
 
-    private ArticlesDatabase getInstance(Application context) {
+    public static ArticlesDatabase getInstance(Application context) {
         if (database == null) {
             database = Room.databaseBuilder(
                     context,

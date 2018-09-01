@@ -1,4 +1,4 @@
-package com.example.xyzreader.model;
+package com.example.xyzreader.database;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
