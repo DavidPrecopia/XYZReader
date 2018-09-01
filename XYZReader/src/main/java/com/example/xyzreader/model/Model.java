@@ -10,6 +10,7 @@ import com.example.xyzreader.network.INetworkClientContract;
 import com.example.xyzreader.network.NetworkClient;
 import com.example.xyzreader.util.NetworkStatusUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Maybe;
@@ -20,6 +21,8 @@ public final class Model implements IModelContract {
     private final INetworkClientContract network;
     private final NetworkStatusUtil networkStatus;
     private final String errorMsgNoNetwork;
+
+    private final List<Article> articleListCache;
 
     private final ArticlesDao articlesDao;
 
@@ -34,19 +37,32 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        this.network = NetworkClient.getInstance(application);
+        this.network = NetworkClient.getInstance();
         this.networkStatus = NetworkStatusUtil.getInstance(application);
         this.errorMsgNoNetwork = application.getString(R.string.error_msg_no_network_connection);
+        this.articleListCache = new ArrayList<>();
         this.articlesDao = ArticlesDatabase.getInstance(application).getArticlesDap();
     }
 
 
     @Override
     public Single<List<Article>> getArticles() {
-        if (networkStatus.noConnection()) {
-            return Single.error(new Exception(errorMsgNoNetwork));
+        if (articleListCache.isEmpty()) {
+            return queryNetwork();
         } else {
-            return network.getArticles();
+            return Single.just(articleListCache);
+        }
+    }
+
+    private Single<List<Article>> queryNetwork() {
+        if (networkStatus.haveConnection()) {
+            return network.getArticles()
+                    .doOnSuccess(articles -> {
+                        articleListCache.clear();
+                        articleListCache.addAll(articles);
+                    });
+        } else {
+            return Single.error(new Exception(errorMsgNoNetwork));
         }
     }
 

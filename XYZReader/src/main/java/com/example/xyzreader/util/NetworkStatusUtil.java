@@ -22,8 +22,8 @@ public final class NetworkStatusUtil {
     }
 
     
-    public boolean noConnection() {
+    public boolean haveConnection() {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo == null;
+        return networkInfo != null;
     }
 }
