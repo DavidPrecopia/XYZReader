@@ -6,11 +6,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-import com.example.xyzreader.R;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.model.IModelContract;
 import com.example.xyzreader.model.Model;
-import com.example.xyzreader.util.NetworkStatusUtil;
 
 import java.util.List;
 
@@ -26,31 +24,18 @@ final class ArticleListViewModel extends AndroidViewModel {
     private final MutableLiveData<String> error;
 
     private final IModelContract model;
-    private final NetworkStatusUtil networkStatus;
 
     ArticleListViewModel(Application application) {
         super(application);
         this.articlesList = new MutableLiveData<>();
         this.error = new MutableLiveData<>();
         this.model = Model.getInstance(application);
-        this.networkStatus = NetworkStatusUtil.getInstance(application);
-        init();
-    }
-
-    private void init() {
         loadArticles();
     }
 
-    void loadArticles() {
-        if (networkStatus.noConnection()) {
-            error.setValue(getApplication().getString(R.string.error_msg_no_network_connection));
-        } else {
-            queryNetwork();
-        }
-    }
 
     @SuppressLint("CheckResult")
-    private void queryNetwork() {
+    void loadArticles() {
         model.getArticles()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,8 +57,7 @@ final class ArticleListViewModel extends AndroidViewModel {
             @Override
             public void onError(Throwable e) {
                 Timber.e(e);
-                ArticleListViewModel.this.error
-                        .setValue(getApplication().getString(R.string.error_msg_generic));
+                ArticleListViewModel.this.error.setValue(e.getMessage());
             }
         };
     }

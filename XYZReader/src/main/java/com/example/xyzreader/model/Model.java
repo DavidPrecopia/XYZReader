@@ -2,11 +2,13 @@ package com.example.xyzreader.model;
 
 import android.app.Application;
 
+import com.example.xyzreader.R;
 import com.example.xyzreader.database.ArticlesDao;
 import com.example.xyzreader.database.ArticlesDatabase;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.network.INetworkClientContract;
 import com.example.xyzreader.network.NetworkClient;
+import com.example.xyzreader.util.NetworkStatusUtil;
 
 import java.util.List;
 
@@ -16,6 +18,9 @@ import io.reactivex.Single;
 public final class Model implements IModelContract {
 
     private final INetworkClientContract network;
+    private final NetworkStatusUtil networkStatus;
+    private final String errorMsgNoNetwork;
+
     private final ArticlesDao articlesDao;
 
 
@@ -29,14 +34,20 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        network = NetworkClient.getInstance();
-        articlesDao = ArticlesDatabase.getInstance(application).getArticlesDap();
+        this.network = NetworkClient.getInstance();
+        this.networkStatus = NetworkStatusUtil.getInstance(application);
+        this.errorMsgNoNetwork = application.getString(R.string.error_msg_no_network_connection);
+        this.articlesDao = ArticlesDatabase.getInstance(application).getArticlesDap();
     }
 
 
     @Override
     public Single<List<Article>> getArticles() {
-        return network.getArticles();
+        if (networkStatus.noConnection()) {
+            return Single.error(new Exception(errorMsgNoNetwork));
+        } else {
+            return network.getArticles();
+        }
     }
 
 
