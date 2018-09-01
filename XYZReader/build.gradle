@@ -34,6 +34,14 @@ dependencies {
     implementation "com.android.support:cardview-v7:$androidSupportVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
+    //Room
+    implementation "android.arch.persistence.room:runtime:$architectureComponentsVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$architectureComponentsVersion"
+    implementation "android.arch.persistence.room:rxjava2:$architectureComponentsVersion"
+    // ViewModel and LiveData
+    implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"
+    implementation "android.arch.lifecycle:common-java8:$architectureComponentsVersion"
+
     // SpeedDial
     implementation "com.leinardi.android:speed-dial:1.0.2"
 
@@ -51,18 +59,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.1'
 
-    
-    //Room
-    implementation "android.arch.persistence.room:runtime:$architectureComponentsVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$architectureComponentsVersion"
-    implementation "android.arch.persistence.room:rxjava2:$architectureComponentsVersion"
-    // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"
-    implementation "android.arch.lifecycle:common-java8:$architectureComponentsVersion"
-    
-
-    // OkHttp
-    implementation 'com.squareup.okhttp3:okhttp:3.1.2'
-
+    // Timber
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
 }
