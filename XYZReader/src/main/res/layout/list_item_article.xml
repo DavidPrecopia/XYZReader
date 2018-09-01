@@ -4,6 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="article"
+            type="com.example.xyzreader.datamodel.Article" />
+    </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,13 +29,14 @@
 
         <TextView
             android:id="@+id/title"
-            android:minLines="2"
-            android:maxLines="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_medium"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_normal"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="@{article.title}"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,10 +50,11 @@
             style="@style/ListItemArticleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{article.author}"
+            app:layout_constraintBottom_toTopOf="@id/published_date"
             app:layout_constraintEnd_toEndOf="@id/title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/title"
-            app:layout_constraintBottom_toTopOf="@id/published_date"
             tools:text="Cory Doctorow" />
 
         <TextView

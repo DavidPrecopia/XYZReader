@@ -1,4 +1,4 @@
-package com.example.xyzreader.remote;
+package com.example.xyzreader.network;
 
 import com.example.xyzreader.BuildConfig;
 import com.example.xyzreader.datamodel.Article;
@@ -12,10 +12,21 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public final class Client {
+public final class NetworkClient implements INetworkClientContract {
+
     private final XyzReaderService service;
 
-    public Client() {
+
+    private static NetworkClient networkClient;
+
+    public static NetworkClient getInstance() {
+        if (networkClient == null) {
+            networkClient = new NetworkClient();
+        }
+        return networkClient;
+    }
+
+    private NetworkClient() {
         this.service = new Retrofit.Builder()
                 .baseUrl(UrlManager.BASE_URL)
                 .client(getOkHttpClient())
@@ -29,12 +40,14 @@ public final class Client {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
             builder.addInterceptor(logging);
         }
         return builder.build();
     }
 
+
+    @Override
     public Single<List<Article>> getArticles() {
         return service.getArticles();
     }

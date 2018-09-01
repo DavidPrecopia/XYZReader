@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.databinding.FragmentArticleDetailBinding;
+import com.example.xyzreader.ui.ArticleList.ArticleListActivity;
 import com.example.xyzreader.util.GlideApp;
 
 import java.text.ParseException;
@@ -135,8 +136,8 @@ public class ArticleDetailFragment extends Fragment implements
 
             GlideApp.with(binding.ivDetailThumbnail)
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
-                    .placeholder(R.drawable.ic_image_icon_black_48dp)
-                    .error(R.drawable.ic_image_icon_black_48dp)
+                    .placeholder(R.drawable.ic_image_icon_black)
+                    .error(R.drawable.ic_image_icon_black)
                     .into(binding.ivDetailThumbnail);
         } else {
             binding.collapsingToolbarLayout.setTitle("N/A");

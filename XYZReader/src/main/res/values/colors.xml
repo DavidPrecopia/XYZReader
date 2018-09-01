@@ -21,6 +21,8 @@
     <color name="colorPrimaryDark">#E64A19</color>
     <color name="colorAccent">#FF1744</color>
 
+    <color name="error">#F44336</color>
+
     <color name="white">#FFFFFF</color>
     <color name="lightGray">#E0E0E0</color>
 

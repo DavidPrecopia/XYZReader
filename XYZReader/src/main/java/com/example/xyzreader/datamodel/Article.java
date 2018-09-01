@@ -24,33 +24,21 @@ public class Article{
 	private String body;
 
 	@SerializedName("thumb")
-	private String thumbnail;
-	@SerializedName("photo")
-	private String photo;
+	private String thumbnailUrl;
+	@SerializedName("photoUrl")
+	private String photoUrl;
 
 
-	public Article(int id, String title, String author, String publishedDate, String body, String thumbnail, String photo) {
+	public Article(int id, String title, String author, String publishedDate, String body, String thumbnailUrl, String photoUrl) {
 		this.id = id;
 		this.title = title;
 		this.author = author;
 		this.publishedDate = publishedDate;
 		this.body = body;
-		this.thumbnail = thumbnail;
-		this.photo = photo;
+		this.thumbnailUrl = thumbnailUrl;
+		this.photoUrl = photoUrl;
 	}
 
-
-	public String getThumbnail(){
-		return thumbnail;
-	}
-
-	public String getAuthor(){
-		return author;
-	}
-
-	public String getPhoto(){
-		return photo;
-	}
 
 	public int getId(){
 		return id;
@@ -60,12 +48,24 @@ public class Article{
 		return title;
 	}
 
-	public String getBody(){
-		return body;
+	public String getAuthor(){
+		return author;
 	}
 
 	public String getPublishedDate(){
 		return publishedDate;
+	}
+
+	public String getBody(){
+		return body;
+	}
+
+	public String getThumbnailUrl(){
+		return thumbnailUrl;
+	}
+
+	public String getPhotoUrl(){
+		return photoUrl;
 	}
 
 
@@ -73,9 +73,9 @@ public class Article{
  	public String toString(){
 		return 
 			"Article{" + 
-			",thumbnail = '" + thumbnail + '\'' +
+			",thumbnailUrl = '" + thumbnailUrl + '\'' +
 			",author = '" + author + '\'' + 
-			",photo = '" + photo + '\'' + 
+			",photoUrl = '" + photoUrl + '\'' +
 			",id = '" + id + '\'' + 
 			",title = '" + title + '\'' + 
 			",body = '" + body + '\'' + 

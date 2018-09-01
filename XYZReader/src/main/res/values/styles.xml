@@ -22,6 +22,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="AppBarThemeLight">
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
@@ -29,6 +30,16 @@
     <style name="ToolbarPopUpTheme">
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
+
+    <style name="ErrorTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableTop">@drawable/ic_error_outline_black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/error</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
 
     <style name="ListItemArticleTextView">
         <item name="android:ellipsize">end</item>

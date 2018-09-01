@@ -104,7 +104,7 @@
             app:elevation="@dimen/elevation_fab_resting"
             app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior"
             app:pressedTranslationZ="@dimen/elevation_fab_touched_translation_z"
-            app:sdMainFabClosedSrc="@drawable/ic_share_white_24dp" />
+            app:sdMainFabClosedSrc="@drawable/ic_share_white" />
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>
