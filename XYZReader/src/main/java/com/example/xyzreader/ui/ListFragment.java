@@ -1,18 +1,18 @@
-package com.example.xyzreader.ui.ArticleList;
+package com.example.xyzreader.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,48 +20,48 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.databinding.ActivityArticleListBinding;
+import com.example.xyzreader.databinding.FragmentListBinding;
 import com.example.xyzreader.databinding.ListItemArticleBinding;
 import com.example.xyzreader.datamodel.Article;
-import com.example.xyzreader.ui.ArticleDetailActivity;
+import com.example.xyzreader.util.FormatDate;
 import com.example.xyzreader.util.GlideApp;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
-import timber.log.Timber;
-
-/**
- * An activity representing a list of Articles. This activity has different presentations for
- * handset and tablet-size devices. On handsets, the activity presents a list of items, which when
- * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
- * activity presents a grid of items as cards.
- */
-public class ArticleListActivity extends AppCompatActivity
+public class ListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
-    private ArticleListViewModel viewModel;
-    private ActivityArticleListBinding binding;
+    private OnClickListFragment onClickListFragment;
+
+    private ArticleViewModel viewModel;
+    private FragmentListBinding binding;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
     private TextView errorTv;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_article_list);
-        init();
+
+    public ListFragment() {
     }
 
+
+    static ListFragment getInstance() {
+        return new ListFragment();
+    }
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false);
+        init();
+        return binding.getRoot();
+    }
 
     private void init() {
         getViewReferences();
         initViewModel();
+        initClickListener();
         initToolbar();
         initSwipeRefreshLayout();
     }
@@ -73,8 +73,8 @@ public class ArticleListActivity extends AppCompatActivity
     }
 
     private void initViewModel() {
-        ArticleListViewModelFactory factory = new ArticleListViewModelFactory(getApplication());
-        viewModel = ViewModelProviders.of(this, factory).get(ArticleListViewModel.class);
+        ArticleViewModelFactory factory = new ArticleViewModelFactory(getActivity().getApplication());
+        viewModel = ViewModelProviders.of(getActivity(), factory).get(ArticleViewModel.class);
         observeArticles();
         observeError();
     }
@@ -86,14 +86,19 @@ public class ArticleListActivity extends AppCompatActivity
         });
     }
 
+    private void initClickListener() {
+        onClickListFragment = (MainActivity) getActivity();
+    }
+
     private void observeError() {
         viewModel.getError().observe(this, this::displayError);
     }
 
     private void initToolbar() {
-        setSupportActionBar(binding.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         // Using a logo image instead
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getActivity().setTitle("");
+        setHasOptionsMenu(true);
     }
 
     private void initSwipeRefreshLayout() {
@@ -103,7 +108,7 @@ public class ArticleListActivity extends AppCompatActivity
 
     private void initRecyclerView(List<Article> articlesList) {
         RecyclerView recyclerView = binding.recyclerView;
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerItemDecoration(recyclerView, layoutManager));
@@ -119,9 +124,9 @@ public class ArticleListActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_refresh, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_refresh, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -158,6 +163,13 @@ public class ArticleListActivity extends AppCompatActivity
         swipeRefreshLayout.setVisibility(View.INVISIBLE);
         errorTv.setVisibility(View.VISIBLE);
         errorTv.setText(errorMessage);
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onClickListFragment = null;
     }
 
 
@@ -206,6 +218,7 @@ public class ArticleListActivity extends AppCompatActivity
                 binding.setArticle(article);
                 bindThumbnail(article.getThumbnailUrl());
                 bindPublishedDate(article.getPublishedDate());
+                binding.executePendingBindings();
             }
 
             private void bindThumbnail(String thumbnailUrl) {
@@ -217,30 +230,21 @@ public class ArticleListActivity extends AppCompatActivity
             }
 
             private void bindPublishedDate(String publishedDate) {
-                binding.publishedDate.setText(Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                parsePublishedDate(publishedDate),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()));
-            }
-
-            private long parsePublishedDate(String publishedDate) {
-                try {
-                    return new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                            .parse(publishedDate)
-                            .getTime();
-                } catch (ParseException ex) {
-                    Timber.e(ex);
-                    Timber.i("passing today's date");
-                    return new Date().getTime();
-                }
+                binding.publishedDate.setText(
+                        FormatDate.getFormattedDate(publishedDate)
+                );
             }
 
 
             @Override
             public void onClick(View v) {
-                // TODO onClick
+                onClickListFragment.openDetailFragment(getAdapterPosition());
             }
         }
+    }
+
+
+    interface OnClickListFragment {
+        void openDetailFragment(int articleIndex);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.xyzreader.ui.ArticleList;
+package com.example.xyzreader.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -18,14 +18,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-final class ArticleListViewModel extends AndroidViewModel {
+final class ArticleViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Article>> articlesList;
     private final MutableLiveData<String> error;
 
     private final IModelContract model;
 
-    ArticleListViewModel(Application application) {
+    ArticleViewModel(Application application) {
         super(application);
         this.articlesList = new MutableLiveData<>();
         this.error = new MutableLiveData<>();
@@ -51,13 +51,13 @@ final class ArticleListViewModel extends AndroidViewModel {
 
             @Override
             public void onSuccess(List<Article> articles) {
-                ArticleListViewModel.this.articlesList.setValue(articles);
+                ArticleViewModel.this.articlesList.setValue(articles);
             }
 
             @Override
             public void onError(Throwable e) {
                 Timber.e(e);
-                ArticleListViewModel.this.error.setValue(e.getMessage());
+                ArticleViewModel.this.error.setValue(e.getMessage());
             }
         };
     }

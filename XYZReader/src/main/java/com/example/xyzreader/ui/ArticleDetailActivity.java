@@ -1,128 +1,65 @@
 package com.example.xyzreader.ui;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.view.ViewGroup;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.ArticleLoader;
-import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.databinding.ActivityArticleDetailBinding;
+import com.example.xyzreader.datamodel.Article;
+
+import java.util.List;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
-public class ArticleDetailActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArticleDetailActivity extends AppCompatActivity {
 
     private ActivityArticleDetailBinding binding;
-
-    private Cursor mCursor;
-    private long mStartId;
-
-    private long mSelectedItemId;
-
-    private ViewPager mPager;
-    private MyPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_article_detail);
 
-        getLoaderManager().initLoader(0, null, this);
-
-        mPagerAdapter = new MyPagerAdapter(getFragmentManager());
-        mPager = binding.viewPager;
-        mPager.setAdapter(mPagerAdapter);
-
-        mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.margin_normal));
-
-        mPager.setPageMarginDrawable(R.color.lightGray);
-
-        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (mCursor != null) {
-                    mCursor.moveToPosition(position);
-                }
-                mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
-            }
-        });
-
-        if (savedInstanceState == null) {
-            if (getIntent() != null && getIntent().getData() != null) {
-                mStartId = ItemsContract.Items.getItemId(getIntent().getData());
-                mSelectedItemId = mStartId;
-            }
-        }
+//        initViewPager();
     }
 
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return ArticleLoader.newAllArticlesInstance(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mCursor = cursor;
-        mPagerAdapter.notifyDataSetChanged();
-
-        // Select the start ID
-        if (mStartId > 0) {
-            mCursor.moveToFirst();
-            while (!mCursor.isAfterLast()) {
-                if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
-                    final int position = mCursor.getPosition();
-                    mPager.setCurrentItem(position, false);
-                    break;
-                }
-                mCursor.moveToNext();
-            }
-            mStartId = 0;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        mCursor = null;
-        mPagerAdapter.notifyDataSetChanged();
-    }
+//    private void initViewPager() {
+//        ViewPager viewPager = binding.viewPager;
+//
+//        List<Article> articlesList = getIntent().getParcelableArrayListExtra(ArticleDetailActivity.class.getSimpleName() + "list");
+//        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), articlesList);
+//        viewPager.setAdapter(pagerAdapter);
+//
+//        int index = getIntent().getIntExtra(ArticleDetailActivity.class.getSimpleName() + "index", 0);
+//        viewPager.setCurrentItem(index, false);
+//
+//        viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.margin_normal));
+//        viewPager.setPageMarginDrawable(R.color.lightGray);
+//    }
 
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
-        MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
 
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
+        private final List<Article> articlesList;
+
+        MyPagerAdapter(FragmentManager fm, List<Article> articlesList) {
+            super(fm);
+            this.articlesList = articlesList;
         }
 
         @Override
         public Fragment getItem(int position) {
-            mCursor.moveToPosition(position);
-            return ArticleDetailFragment.newInstance(mCursor.getLong(ArticleLoader.Query._ID));
+            return DetailFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            return (mCursor != null) ? mCursor.getCount() : 0;
+            return articlesList.size();
         }
     }
 }

@@ -1,11 +1,11 @@
-package com.example.xyzreader.ui.ArticleList;
+package com.example.xyzreader.ui;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-public class ArticleListViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public class ArticleViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     @NonNull
     private final Application application;
@@ -15,7 +15,7 @@ public class ArticleListViewModelFactory extends ViewModelProvider.AndroidViewMo
      *
      * @param application an application to pass in {@link AndroidViewModel}
      */
-    ArticleListViewModelFactory(@NonNull Application application) {
+    ArticleViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
     }
@@ -23,7 +23,7 @@ public class ArticleListViewModelFactory extends ViewModelProvider.AndroidViewMo
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
-    public ArticleListViewModel create(@NonNull Class modelClass) {
-        return new ArticleListViewModel(application);
+    public ArticleViewModel create(@NonNull Class modelClass) {
+        return new ArticleViewModel(application);
     }
 }
