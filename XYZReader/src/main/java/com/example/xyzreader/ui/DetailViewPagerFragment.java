@@ -14,29 +14,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.databinding.FragmentViewPagerBinding;
+import com.example.xyzreader.databinding.FragmentViewPagerDetailBinding;
 import com.example.xyzreader.datamodel.Article;
 
 import java.util.List;
 
 /**
- * An activity representing a single Article detail screen, letting you swipe between articles.
+ * A Fragment representing a single Article detail screen, letting you swipe between articles.
  */
-public class ViewPagerFragment extends Fragment {
+public class DetailViewPagerFragment extends Fragment {
 
-    private FragmentViewPagerBinding binding;
+    private FragmentViewPagerDetailBinding binding;
 
     private ArticleViewModel viewModel;
 
     public static final String ARGUMENT_ID_ARTICLE_INDEX = "article_index_id";
 
 
-    public ViewPagerFragment() {
+    public DetailViewPagerFragment() {
     }
 
 
-    static ViewPagerFragment getInstance(int articleIndex) {
-        ViewPagerFragment fragment = new ViewPagerFragment();
+
+    static DetailViewPagerFragment getInstance(int articleIndex) {
+        DetailViewPagerFragment fragment = new DetailViewPagerFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGUMENT_ID_ARTICLE_INDEX, articleIndex);
         fragment.setArguments(bundle);
@@ -47,7 +48,7 @@ public class ViewPagerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_view_pager, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_view_pager_detail, container, false);
 
         init();
 

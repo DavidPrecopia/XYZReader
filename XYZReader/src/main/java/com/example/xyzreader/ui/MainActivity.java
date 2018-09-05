@@ -33,30 +33,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void openDetailFragment(int articleIndex) {
-        Fragment fragment = getResources().getBoolean(R.bool.is_master_detail_layout)
-                ? DetailFragment.newInstance(articleIndex)
-                : ViewPagerFragment.getInstance(articleIndex);
-        addFragment(fragment);
+//        Fragment fragment = getResources().getBoolean(R.bool.is_master_detail_layout)
+//                ? DetailFragment.newInstance(articleIndex)
+//                : DetailViewPagerFragment.getInstance(articleIndex);
+        addFragment(DetailFragment.newInstance(articleIndex));
     }
 
 
     private void addFragment(Fragment fragment) {
         fragmentManager.beginTransaction()
                 .replace(binding.fragmentHolder.getId(), fragment)
+                .addToBackStack(null)
                 .commit();
     }
 
-
-    /**
-     * @return true if Up navigation completed successfully <b>and</b> this Activity was finished, false otherwise.
-     */
-    @Override
-    public boolean onSupportNavigateUp() {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
-            return false;
-        } else {
-            return super.onSupportNavigateUp();
-        }
-    }
+//    /**
+//     * @return true if Up navigation completed successfully <b>and</b> this Activity was finished, false otherwise.
+//     */
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        if (fragmentManager.getBackStackEntryCount() > 0) {
+//            fragmentManager.popBackStack();
+//            return false;
+//        } else {
+//            return super.onSupportNavigateUp();
+//        }
+//    }
 }
