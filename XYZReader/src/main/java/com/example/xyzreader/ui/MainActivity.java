@@ -3,6 +3,7 @@ package com.example.xyzreader.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.xyzreader.R;
@@ -12,6 +13,7 @@ public class MainActivity extends AppCompatActivity
         implements ListFragment.OnClickListFragment {
 
     private ActivityMainBinding binding;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init(boolean newActivity) {
+        fragmentManager = getSupportFragmentManager();
+
         if (newActivity) {
             addFragment(ListFragment.getInstance());
         }
@@ -37,9 +41,22 @@ public class MainActivity extends AppCompatActivity
 
 
     private void addFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
+        fragmentManager.beginTransaction()
                 .replace(binding.fragmentHolder.getId(), fragment)
                 .commit();
+    }
+
+
+    /**
+     * @return true if Up navigation completed successfully <b>and</b> this Activity was finished, false otherwise.
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+            return false;
+        } else {
+            return super.onSupportNavigateUp();
+        }
     }
 }
