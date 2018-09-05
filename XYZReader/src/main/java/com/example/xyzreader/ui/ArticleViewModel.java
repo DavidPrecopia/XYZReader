@@ -6,6 +6,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
+import com.example.xyzreader.R;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.model.IModelContract;
 import com.example.xyzreader.model.Model;
@@ -57,7 +58,15 @@ final class ArticleViewModel extends AndroidViewModel {
             @Override
             public void onError(Throwable e) {
                 Timber.e(e);
-                ArticleViewModel.this.error.setValue(e.getMessage());
+                ArticleViewModel.this.error.setValue(checkErrorMessage(e));
+            }
+
+            private String checkErrorMessage(Throwable e) {
+                if (e.getMessage().equals(getApplication().getString(R.string.error_msg_no_network_connection))) {
+                    return e.getMessage();
+                } else {
+                    return getApplication().getString(R.string.error_msg_generic);
+                }
             }
         };
     }
