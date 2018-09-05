@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void openDetailFragment(int articleIndex) {
-        addFragment(DetailFragment.newInstance(articleIndex));
+        Fragment fragment = getResources().getBoolean(R.bool.is_master_detail_layout)
+                ? DetailFragment.newInstance(articleIndex)
+                : ViewPagerFragment.getInstance(articleIndex);
+        addFragment(fragment);
     }
 
 

@@ -24,22 +24,19 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding binding;
 
     private ArticleViewModel viewModel;
-    
-    private Article article;
-    public static final String ARGUMENT_ID_ARTICLE = "article_id";
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+    private Article article;
+    public static final String ARGUMENT_ID_ARTICLE_INDEX = "article_index_id";
+
+
     public DetailFragment() {
     }
 
 
-    public static DetailFragment newInstance(int  articleIndex) {
+    static DetailFragment newInstance(int articleIndex) {
         DetailFragment fragment = new DetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGUMENT_ID_ARTICLE, articleIndex);
+        bundle.putInt(ARGUMENT_ID_ARTICLE_INDEX, articleIndex);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -52,7 +49,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void initArticleField() {
-        int articleIndex = getArguments().getInt(ARGUMENT_ID_ARTICLE);
+        int articleIndex = getArguments().getInt(ARGUMENT_ID_ARTICLE_INDEX);
         article = viewModel.getArticlesList().getValue().get(articleIndex);
     }
 
