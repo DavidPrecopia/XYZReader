@@ -10,9 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -61,7 +58,6 @@ public class ListFragment extends Fragment
         getViewReferences();
         initViewModel();
         initClickListener();
-//        initToolbar();
         initSwipeRefreshLayout();
     }
 
@@ -93,13 +89,6 @@ public class ListFragment extends Fragment
         viewModel.getError().observe(this, this::displayError);
     }
 
-//    private void initToolbar() {
-//        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-//        // Using a logo image instead
-//        getActivity().setTitle("");
-//        setHasOptionsMenu(true);
-//    }
-
     private void initSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -121,23 +110,6 @@ public class ListFragment extends Fragment
         );
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_refresh, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_refresh:
-                onRefresh();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void onRefresh() {
