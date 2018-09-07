@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity
 
     private void init(boolean newActivity) {
         fragmentManager = getSupportFragmentManager();
-
         if (newActivity) {
             addFragment(ListFragment.getInstance());
         }

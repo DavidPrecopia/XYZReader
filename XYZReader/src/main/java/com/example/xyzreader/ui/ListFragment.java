@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,7 +61,7 @@ public class ListFragment extends Fragment
         getViewReferences();
         initViewModel();
         initClickListener();
-        initToolbar();
+//        initToolbar();
         initSwipeRefreshLayout();
     }
 
@@ -94,12 +93,12 @@ public class ListFragment extends Fragment
         viewModel.getError().observe(this, this::displayError);
     }
 
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        // Using a logo image instead
-        getActivity().setTitle("");
-        setHasOptionsMenu(true);
-    }
+//    private void initToolbar() {
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+//        // Using a logo image instead
+//        getActivity().setTitle("");
+//        setHasOptionsMenu(true);
+//    }
 
     private void initSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(this);
