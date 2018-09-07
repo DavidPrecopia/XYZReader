@@ -110,11 +110,13 @@ public class ListFragment extends Fragment
 
 
     private void displayLoadingView() {
+        errorTv.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setVisibility(View.INVISIBLE);
     }
 
     private void hideLoadingView() {
+        errorTv.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
     }
