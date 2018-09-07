@@ -17,17 +17,12 @@ import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.FragmentListBinding;
-import com.example.xyzreader.databinding.ListItemArticleBinding;
 import com.example.xyzreader.datamodel.Article;
-import com.example.xyzreader.util.FormatDate;
-import com.example.xyzreader.util.GlideApp;
 
 import java.util.List;
 
 public class ListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener {
-
-    private OnClickListFragment onClickListFragment;
 
     private ArticleViewModel viewModel;
     private FragmentListBinding binding;
@@ -57,7 +52,6 @@ public class ListFragment extends Fragment
     private void init() {
         getViewReferences();
         initViewModel();
-        initClickListener();
         initSwipeRefreshLayout();
     }
 
@@ -81,10 +75,6 @@ public class ListFragment extends Fragment
         });
     }
 
-    private void initClickListener() {
-        onClickListFragment = (MainActivity) getActivity();
-    }
-
     private void observeError() {
         viewModel.getError().observe(this, this::displayError);
     }
@@ -100,7 +90,7 @@ public class ListFragment extends Fragment
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerItemDecoration(recyclerView, layoutManager));
-        recyclerView.setAdapter(new ArticleAdapter(articlesList));
+        recyclerView.setAdapter(new ArticleAdapter(articlesList, (MainActivity) getActivity()));
     }
 
     private RecyclerView.ItemDecoration getDividerItemDecoration(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -134,88 +124,5 @@ public class ListFragment extends Fragment
         swipeRefreshLayout.setVisibility(View.INVISIBLE);
         errorTv.setVisibility(View.VISIBLE);
         errorTv.setText(errorMessage);
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        onClickListFragment = null;
-    }
-
-
-    private class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
-        private final List<Article> articlesList;
-
-        ArticleAdapter(List<Article> articlesList) {
-            this.articlesList = articlesList;
-        }
-
-        @NonNull
-        @Override
-        public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ArticleViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.getContext()), R.layout.list_item_article, parent, false
-                    )
-            );
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
-            holder.bindView(
-                    articlesList.get(holder.getAdapterPosition())
-            );
-        }
-
-        @Override
-        public int getItemCount() {
-            return articlesList.size();
-        }
-
-
-        class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            private ListItemArticleBinding binding;
-
-            ArticleViewHolder(ListItemArticleBinding binding) {
-                super(binding.getRoot());
-                this.binding = binding;
-                binding.getRoot().setOnClickListener(this);
-            }
-
-
-            private void bindView(Article article) {
-                binding.setArticle(article);
-                bindThumbnail(article.getThumbnailUrl());
-                bindPublishedDate(article.getPublishedDate());
-                binding.executePendingBindings();
-            }
-
-            private void bindThumbnail(String thumbnailUrl) {
-                GlideApp.with(binding.ivThumbnail)
-                        .load(thumbnailUrl)
-                        .placeholder(R.drawable.ic_image_icon_black)
-                        .error(R.drawable.ic_image_icon_black)
-                        .into(binding.ivThumbnail);
-            }
-
-            private void bindPublishedDate(String publishedDate) {
-                binding.publishedDate.setText(
-                        FormatDate.getFormattedDate(publishedDate)
-                );
-            }
-
-
-            @Override
-            public void onClick(View v) {
-                onClickListFragment.openDetailFragment(getAdapterPosition());
-            }
-        }
-    }
-
-
-    interface OnClickListFragment {
-        void openDetailFragment(int articleIndex);
     }
 }

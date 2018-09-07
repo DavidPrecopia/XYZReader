@@ -10,7 +10,7 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
-        implements ListFragment.OnClickListFragment {
+        implements ArticleAdapter.OnClickListFragment {
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
