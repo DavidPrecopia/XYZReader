@@ -9,7 +9,6 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,8 +17,6 @@ import com.example.xyzreader.databinding.FragmentDetailBinding;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.util.FormatDate;
 import com.example.xyzreader.util.GlideApp;
-
-import timber.log.Timber;
 
 public class DetailFragment extends Fragment {
 
@@ -73,7 +70,6 @@ public class DetailFragment extends Fragment {
 
     private void init() {
         setUpToolbar();
-        enableOptionsMenu();
         setUpFab();
         bindViews();
     }
@@ -81,10 +77,6 @@ public class DetailFragment extends Fragment {
     private void setUpToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void enableOptionsMenu() {
-        setHasOptionsMenu(true);
     }
 
     private void setUpFab() {
@@ -126,22 +118,5 @@ public class DetailFragment extends Fragment {
                 .placeholder(R.drawable.ic_image_icon_black)
                 .error(R.drawable.ic_image_icon_black)
                 .into(binding.ivDetailThumbnail);
-    }
-
-
-    /**
-     * Because this could be a child of {@link DetailViewPagerFragment},
-     * I need to pop the backstack here.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Timber.d("onoption");
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }
