@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.ActivityMainBinding;
@@ -26,7 +25,10 @@ public class MainActivity extends AppCompatActivity
     private void init(boolean newActivity) {
         fragmentManager = getSupportFragmentManager();
         if (newActivity) {
-            addFragment(ListFragment.getInstance());
+            // The first fragment should not be added to the backstack
+            fragmentManager.beginTransaction()
+                    .add(binding.fragmentHolder.getId(), ListFragment.getInstance())
+                    .commit();
         }
     }
 
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack(null)
                 .commit();
     }
+
 
     /**
      * @return true if Up navigation completed successfully <b>and</b> this Activity was finished, false otherwise.
