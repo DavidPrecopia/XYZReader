@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_fam_sort_by">Sort By</string>
+    <string name="label_fam_offline">Saved Offline</string>
+    <string name="label_fam_articles">Articles</string>
+
+    <string name="content_description_app_logo">This app\'s logo</string>
+    <string name="content_description_article_thumbnail">Article\'s thumbnailUrl</string>
+    <string name="content_description_fab_sort_by">Sort by</string>
+
+    <string name="error_msg_no_articles">No articles available</string>
+</resources>

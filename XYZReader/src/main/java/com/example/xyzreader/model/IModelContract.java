@@ -12,8 +12,6 @@ public interface IModelContract {
 
     Maybe<List<Article>> getOfflineArticles();
 
-    Maybe<Article> getSingleOfflineArticle(int id);
-
     void saveArticleOffline(Article article);
 
     void deleteOfflineArticle(int id);

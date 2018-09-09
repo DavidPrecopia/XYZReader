@@ -17,7 +17,10 @@ import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.FragmentListBinding;
+import com.example.xyzreader.databinding.ListItemArticleBinding;
 import com.example.xyzreader.datamodel.Article;
+import com.example.xyzreader.util.FormatDate;
+import com.example.xyzreader.util.GlideApp;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
@@ -28,6 +31,8 @@ public class ListFragment extends Fragment
     private ArticleViewModel viewModel;
     private FragmentListBinding binding;
 
+    private FloatingActionMenu floatingActionMenu;
+    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
     private TextView errorTv;
@@ -58,6 +63,8 @@ public class ListFragment extends Fragment
     }
 
     private void getViewReferences() {
+        floatingActionMenu = binding.fabBase;
+        recyclerView = binding.recyclerView;
         swipeRefreshLayout = binding.swipeRefreshLayout;
         progressBar = binding.progressBar;
         errorTv = binding.tvError;
@@ -70,10 +77,18 @@ public class ListFragment extends Fragment
         observeError();
     }
 
+    /**
+     * Initializing RecyclerView once data is available ensures
+     * scroll position will be restore on rotation
+     */
     private void observeArticles() {
         viewModel.getArticlesList().observe(this, articlesList -> {
             hideLoadingView();
-            initRecyclerView(articlesList);
+            if (articlesList == null || articlesList.isEmpty()) {
+                displayError(getString(R.string.error_msg_no_articles));
+            } else {
+                initRecyclerView(articlesList);
+            }
         });
     }
 
@@ -86,11 +101,11 @@ public class ListFragment extends Fragment
     }
 
     private void initFab() {
-        FloatingActionMenu fam = binding.fabBase;
-        fam.setClosedOnTouchOutside(true);
-        fam.setIconAnimated(false);
+        floatingActionMenu.setClosedOnTouchOutside(true);
+        floatingActionMenu.setIconAnimated(false);
         bindFabIcons();
-        fabScrollListener(fam);
+        fabScrollListener();
+        fabClickListeners();
     }
 
     /**
@@ -102,23 +117,38 @@ public class ListFragment extends Fragment
         binding.fabSortArticles.setImageResource(R.drawable.ic_articles_list_18dp);
     }
 
-    private void fabScrollListener(FloatingActionMenu fam) {
+    private void fabScrollListener() {
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-                    fam.hideMenuButton(true);
+                    floatingActionMenu.hideMenuButton(true);
                 } else if (dy < 0) {
-                    fam.showMenuButton(true);
+                    floatingActionMenu.showMenuButton(true);
                 }
             }
         });
     }
 
+    private void fabClickListeners() {
+        binding.fabSortOffline.setOnClickListener(view -> {
+            commonFabClickListenerActions();
+            viewModel.loadOfflineArticles();
+        });
+        binding.fabSortArticles.setOnClickListener(view -> {
+            commonFabClickListenerActions();
+            viewModel.loadArticles();
+        });
+    }
+
+    private void commonFabClickListenerActions() {
+        displayLoadingView();
+        floatingActionMenu.close(false);
+    }
+
 
     private void initRecyclerView(List<Article> articlesList) {
-        RecyclerView recyclerView = binding.recyclerView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -138,7 +168,7 @@ public class ListFragment extends Fragment
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(false);
         displayLoadingView();
-        viewModel.loadArticles();
+        viewModel.refresh();
     }
 
 
@@ -156,8 +186,90 @@ public class ListFragment extends Fragment
 
     private void displayError(String errorMessage) {
         progressBar.setVisibility(View.GONE);
-        swipeRefreshLayout.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         errorTv.setVisibility(View.VISIBLE);
         errorTv.setText(errorMessage);
+    }
+
+
+    final class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+
+        private final List<Article> articlesList;
+
+        private OnClickListFragment onClickListFragment;
+
+
+        ArticleAdapter(List<Article> articlesList, OnClickListFragment onClickListFragment) {
+            this.articlesList = articlesList;
+            this.onClickListFragment = onClickListFragment;
+        }
+
+        @NonNull
+        @Override
+        public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ArticleViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.getContext()), R.layout.list_item_article, parent, false
+                    )
+            );
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+            holder.bindView(
+                    articlesList.get(holder.getAdapterPosition())
+            );
+        }
+
+        @Override
+        public int getItemCount() {
+            return articlesList.size();
+        }
+
+
+        class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+            private ListItemArticleBinding binding;
+
+            ArticleViewHolder(ListItemArticleBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+                binding.getRoot().setOnClickListener(this);
+            }
+
+
+            private void bindView(Article article) {
+                binding.setArticle(article);
+                bindThumbnail(article.getThumbnailUrl());
+                bindPublishedDate(article.getPublishedDate());
+                binding.executePendingBindings();
+            }
+
+            private void bindThumbnail(String thumbnailUrl) {
+                GlideApp.with(binding.ivThumbnail)
+                        .load(thumbnailUrl)
+                        .placeholder(R.drawable.ic_image_icon_black_24dp)
+                        .error(R.drawable.ic_image_icon_black_24dp)
+                        .into(binding.ivThumbnail);
+            }
+
+            private void bindPublishedDate(String publishedDate) {
+                binding.publishedDate.setText(
+                        FormatDate.getFormattedDate(publishedDate)
+                );
+            }
+
+
+            @Override
+            public void onClick(View v) {
+                onClickListFragment.openDetailFragment(getAdapterPosition());
+            }
+        }
+    }
+
+
+    public interface OnClickListFragment {
+        void openDetailFragment(int articleIndex);
     }
 }

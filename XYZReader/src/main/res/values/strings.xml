@@ -4,13 +4,6 @@
     <string name="error_msg_generic">An error has occurred</string>
     <string name="error_msg_no_network_connection">No network connection</string>
 
-    <!--fragment_list-->
-    <string name="label_fam_sort_by">Sort By</string>
-    <string name="label_fam_offline">Saved Offline</string>
-    <string name="label_fam_articles">Articles</string>
-    <string name="content_description_app_logo">This app\'s logo</string>
-    <string name="content_description_article_thumbnail">Article\'s thumbnailUrl</string>
-    <string name="content_description_fab_sort_by">Sort by</string>
 
     <!--fragment_detail-->
     <string name="content_description_fab_share">Share</string>

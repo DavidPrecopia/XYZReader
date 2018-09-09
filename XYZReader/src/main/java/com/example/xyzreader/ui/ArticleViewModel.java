@@ -1,6 +1,5 @@
 package com.example.xyzreader.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
@@ -13,21 +12,30 @@ import com.example.xyzreader.model.Model;
 
 import java.util.List;
 
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableMaybeObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 final class ArticleViewModel extends AndroidViewModel {
+
+    private final CompositeDisposable disposable;
 
     private final MutableLiveData<List<Article>> articlesList;
     private final MutableLiveData<String> error;
 
     private final IModelContract model;
 
+    private int lastSelected;
+    private static final int OFFLINE_SELECTED = 100;
+    private static final int ARTICLES_SELECTED = 200;
+
+
     ArticleViewModel(Application application) {
         super(application);
+        this.disposable = new CompositeDisposable();
         this.articlesList = new MutableLiveData<>();
         this.error = new MutableLiveData<>();
         this.model = Model.getInstance(application);
@@ -35,21 +43,17 @@ final class ArticleViewModel extends AndroidViewModel {
     }
 
 
-    @SuppressLint("CheckResult")
     void loadArticles() {
-        model.getArticles()
+        lastSelected = ARTICLES_SELECTED;
+        disposable.add(model.getArticles()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(observer());
+                .subscribeWith(articleObserver())
+        );
     }
 
-    private SingleObserver<List<Article>> observer() {
-        return new SingleObserver<List<Article>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
+    private DisposableSingleObserver<List<Article>> articleObserver() {
+        return new DisposableSingleObserver<List<Article>>() {
             @Override
             public void onSuccess(List<Article> articles) {
                 ArticleViewModel.this.articlesList.setValue(articles);
@@ -72,11 +76,59 @@ final class ArticleViewModel extends AndroidViewModel {
     }
 
 
+    void loadOfflineArticles() {
+        lastSelected = OFFLINE_SELECTED;
+        disposable.add(model.getOfflineArticles()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(offlineObserver())
+        );
+    }
+
+    private DisposableMaybeObserver<List<Article>> offlineObserver() {
+        return new DisposableMaybeObserver<List<Article>>() {
+            @Override
+            public void onSuccess(List<Article> articles) {
+                Timber.d("onSuccess -- %s", articles.size());
+                ArticleViewModel.this.articlesList.setValue(articles);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+                ArticleViewModel.this.error.setValue(getApplication().getString(R.string.error_msg_generic));
+            }
+
+            @Override
+            public void onComplete() {
+                Timber.d("onComplete");
+                ArticleViewModel.this.error.setValue(getApplication().getString(R.string.error_msg_no_articles));
+            }
+        };
+    }
+
+
+    void refresh() {
+        if (lastSelected == ARTICLES_SELECTED) {
+            loadArticles();
+        } else if (lastSelected == OFFLINE_SELECTED) {
+            loadOfflineArticles();
+        }
+    }
+
+
     LiveData<List<Article>> getArticlesList() {
         return articlesList;
     }
 
     LiveData<String> getError() {
         return error;
+    }
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposable.clear();
     }
 }

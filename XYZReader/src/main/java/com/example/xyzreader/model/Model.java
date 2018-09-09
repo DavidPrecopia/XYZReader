@@ -15,6 +15,7 @@ import java.util.List;
 
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import timber.log.Timber;
 
 public final class Model implements IModelContract {
 
@@ -69,21 +70,22 @@ public final class Model implements IModelContract {
 
     @Override
     public Maybe<List<Article>> getOfflineArticles() {
-        return null;
-    }
-
-    @Override
-    public Maybe<Article> getSingleOfflineArticle(int id) {
-        return null;
+        return articlesDao.getAllArticles();
     }
 
     @Override
     public void saveArticleOffline(Article article) {
-
+        long insertResult = articlesDao.insertArticle(article);
+        if (insertResult == -1) {
+            Timber.e("Error inserting article");
+        }
     }
 
     @Override
     public void deleteOfflineArticle(int id) {
-
+        int deletionResult = articlesDao.deleteArticle(id);
+        if (deletionResult == -1) {
+            Timber.e("Error deleting article");
+        }
     }
 }
