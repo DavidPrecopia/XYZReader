@@ -47,6 +47,7 @@
 
 
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -95,16 +96,16 @@
         </android.support.v4.widget.NestedScrollView>
 
 
-        <com.leinardi.android.speeddial.SpeedDialView
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab"
+            style="@style/FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/content_description_fab_share"
-            app:elevation="@dimen/elevation_fab_resting"
-            app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior"
-            app:pressedTranslationZ="@dimen/elevation_fab_touched_translation_z"
-            app:sdMainFabClosedSrc="@drawable/ic_share_white" />
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:contentDescription="@string/content_description_fab_share" />
+
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

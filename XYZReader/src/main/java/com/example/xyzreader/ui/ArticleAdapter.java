@@ -77,8 +77,8 @@ final class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleVi
         private void bindThumbnail(String thumbnailUrl) {
             GlideApp.with(binding.ivThumbnail)
                     .load(thumbnailUrl)
-                    .placeholder(R.drawable.ic_image_icon_black)
-                    .error(R.drawable.ic_image_icon_black)
+                    .placeholder(R.drawable.ic_image_icon_black_24dp)
+                    .error(R.drawable.ic_image_icon_black_24dp)
                     .into(binding.ivThumbnail);
         }
 

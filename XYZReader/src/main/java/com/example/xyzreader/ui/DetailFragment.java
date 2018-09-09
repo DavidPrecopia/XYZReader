@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.example.xyzreader.databinding.FragmentDetailBinding;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.util.FormatDate;
 import com.example.xyzreader.util.GlideApp;
+import com.github.clans.fab.FloatingActionButton;
 
 public class DetailFragment extends Fragment {
 
@@ -62,15 +64,13 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
-
         init();
-
         return binding.getRoot();
     }
 
     private void init() {
         setUpToolbar();
-        setUpFab();
+        initFab();
         bindViews();
     }
 
@@ -79,13 +79,31 @@ public class DetailFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setUpFab() {
-        binding.fab.setOnClickListener(view ->
+    private void initFab() {
+        FloatingActionButton fab = binding.fab;
+        fab.setImageResource(R.drawable.ic_share_white_24dp);
+        fabClickListener(fab);
+        fabScrollListener(fab);
+    }
+
+    private void fabClickListener(FloatingActionButton fab) {
+        fab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
                         .setType("text/plain")
                         .setText("Some sample text")
                         .getIntent(), getString(R.string.content_description_fab_share)))
         );
+    }
+
+    private void fabScrollListener(FloatingActionButton fab) {
+        binding.nestedScrollView.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener) (nestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (scrollY > oldScrollY) {
+                        fab.hide(true);
+                    } else if (scrollY < oldScrollY) {
+                        fab.show(true);
+                    }
+                });
     }
 
     private void bindViews() {
@@ -115,8 +133,8 @@ public class DetailFragment extends Fragment {
     private void bindPhoto() {
         GlideApp.with(binding.ivDetailThumbnail)
                 .load(article.getPhotoUrl())
-                .placeholder(R.drawable.ic_image_icon_black)
-                .error(R.drawable.ic_image_icon_black)
+                .placeholder(R.drawable.ic_image_icon_black_24dp)
+                .error(R.drawable.ic_image_icon_black_24dp)
                 .into(binding.ivDetailThumbnail);
     }
 }

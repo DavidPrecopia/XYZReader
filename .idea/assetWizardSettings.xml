@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/david/.androidstudio/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_image_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/home/david/.androidstudio/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/file/ic_cloud_circle_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -29,8 +29,12 @@
                         <option name="values">
                           <map>
                             <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="ic_image_icon_black" />
-                            <entry key="sourceFile" value="$USER_HOME$" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="height" value="18" />
+                            <entry key="outputName" value="ic_cloud_circle_black_24dp" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/round-cloud_download-24px.svg" />
+                            <entry key="width" value="18" />
                           </map>
                         </option>
                       </PersistentState>

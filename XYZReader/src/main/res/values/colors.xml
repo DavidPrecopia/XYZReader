@@ -28,4 +28,5 @@
 
     <color name="blackTransparent">#00000000</color>
     <color name="blackTransparent_40_percent">#40000000</color>
+    <color name="blackTransparent_80_percent">#80000000</color>
 </resources>

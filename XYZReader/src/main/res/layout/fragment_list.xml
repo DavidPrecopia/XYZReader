@@ -34,6 +34,44 @@
             style="@style/ErrorTextView"
             android:layout_gravity="center"
             tools:text="@string/error_msg_generic" />
+
+
+        <!--
+            Width and height are set to match_parent so
+            setClosedOnTouchOutside(boolean) works -
+            FloatingActionMenu needs to detect the touch.
+        -->
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_base"
+            style="@style/FloatingActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@string/content_description_fab_sort_by"
+            android:padding="@dimen/margin_normal"
+            app:menu_backgroundColor="@color/blackTransparent_80_percent"
+            app:menu_colorNormal="@color/colorAccent"
+            app:menu_fab_label="@string/label_fam_sort_by"
+            app:menu_icon="@drawable/ic_sort_white_24dp">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_sort_offline"
+                style="@style/FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/label_fam_offline"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_sort_articles"
+                style="@style/FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/label_fam_articles"
+                app:fab_size="mini" />
+
+        </com.github.clans.fab.FloatingActionMenu>
+
     </FrameLayout>
 
 </layout>

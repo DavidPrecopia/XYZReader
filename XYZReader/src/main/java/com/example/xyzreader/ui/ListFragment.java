@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.FragmentListBinding;
 import com.example.xyzreader.datamodel.Article;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class ListFragment extends Fragment
         getViewReferences();
         initViewModel();
         initSwipeRefreshLayout();
+        initFab();
     }
 
     private void getViewReferences() {
@@ -81,6 +83,37 @@ public class ListFragment extends Fragment
 
     private void initSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void initFab() {
+        FloatingActionMenu fam = binding.fabBase;
+        fam.setClosedOnTouchOutside(true);
+        fam.setIconAnimated(false);
+        bindFabIcons();
+        fabScrollListener(fam);
+    }
+
+    /**
+     * Need to set the icons here because these elements
+     * do not support `app:srcCompat`
+     */
+    private void bindFabIcons() {
+        binding.fabSortOffline.setImageResource(R.drawable.ic_cloud_done_18dp);
+        binding.fabSortArticles.setImageResource(R.drawable.ic_articles_list_18dp);
+    }
+
+    private void fabScrollListener(FloatingActionMenu fam) {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    fam.hideMenuButton(true);
+                } else if (dy < 0) {
+                    fam.showMenuButton(true);
+                }
+            }
+        });
     }
 
 

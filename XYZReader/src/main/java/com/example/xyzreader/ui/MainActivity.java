@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.ActivityMainBinding;
@@ -20,6 +21,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init(savedInstanceState == null);
+
+
+        binding.toolbar.setVisibility(View.GONE);
     }
 
     private void init(boolean newActivity) {
