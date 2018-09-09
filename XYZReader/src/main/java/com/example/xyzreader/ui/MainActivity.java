@@ -21,9 +21,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init(savedInstanceState == null);
-
-
-        binding.toolbar.setVisibility(View.GONE);
     }
 
     private void init(boolean newActivity) {
