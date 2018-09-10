@@ -46,19 +46,19 @@
             tools:text="This is the title of an article" />
 
         <TextView
-            android:id="@+id/author"
+            android:id="@+id/tv_author"
             style="@style/ListItemArticleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{article.author}"
-            app:layout_constraintBottom_toTopOf="@id/published_date"
+            app:layout_constraintBottom_toTopOf="@id/tv_published_date"
             app:layout_constraintEnd_toEndOf="@id/title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/title"
             tools:text="Cory Doctorow" />
 
         <TextView
-            android:id="@+id/published_date"
+            android:id="@+id/tv_published_date"
             style="@style/ListItemArticleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

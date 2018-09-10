@@ -9,6 +9,7 @@ import com.example.xyzreader.datamodel.Article;
 import java.util.List;
 
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
@@ -24,5 +25,5 @@ public interface ArticlesDao {
     int deleteArticle(int id);
 
     @Query("SELECT * FROM " + DatabaseContract.TABLE_NAME_ARTICLES + " WHERE " + DatabaseContract.COLUMN_NAME_ID + " = :id LIMIT 1")
-    int isFavorite(int id);
+    int isArticleSavedOffline(int id);
 }

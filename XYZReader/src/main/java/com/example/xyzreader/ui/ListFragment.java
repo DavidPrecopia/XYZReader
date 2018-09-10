@@ -255,7 +255,7 @@ public class ListFragment extends Fragment
             }
 
             private void bindPublishedDate(String publishedDate) {
-                binding.publishedDate.setText(
+                binding.tvPublishedDate.setText(
                         FormatDate.getFormattedDate(publishedDate)
                 );
             }

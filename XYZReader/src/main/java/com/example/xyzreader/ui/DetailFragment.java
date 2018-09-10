@@ -8,10 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.databinding.FragmentDetailBinding;
@@ -24,10 +25,14 @@ public class DetailFragment extends Fragment {
 
     private FragmentDetailBinding binding;
 
-    private ArticleViewModel viewModel;
+    private ArticleViewModel articleViewModel;
+    private DetailViewModel detailViewModel;
 
     private Article article;
     public static final String ARGUMENT_ID_ARTICLE_INDEX = "article_index_id";
+
+    private TextView bodyTextView;
+    private ProgressBar bodyProgressBar;
 
 
     public DetailFragment() {
@@ -45,18 +50,19 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initViewModel();
+        initArticleViewModel();
         initArticleField();
     }
 
-    private void initArticleField() {
-        int articleIndex = getArguments().getInt(ARGUMENT_ID_ARTICLE_INDEX);
-        article = viewModel.getArticlesList().getValue().get(articleIndex);
+    private void initArticleViewModel() {
+        ArticleViewModelFactory articleFactory = new ArticleViewModelFactory(getActivity().getApplication());
+        articleViewModel = ViewModelProviders.of(getActivity(), articleFactory).get(ArticleViewModel.class);
     }
 
-    private void initViewModel() {
-        ArticleViewModelFactory factory = new ArticleViewModelFactory(getActivity().getApplication());
-        viewModel = ViewModelProviders.of(getActivity(), factory).get(ArticleViewModel.class);
+
+    private void initArticleField() {
+        int articleIndex = getArguments().getInt(ARGUMENT_ID_ARTICLE_INDEX);
+        article = articleViewModel.getArticlesList().getValue().get(articleIndex);
     }
 
 
@@ -69,9 +75,38 @@ public class DetailFragment extends Fragment {
     }
 
     private void init() {
+        initViewReferences();
+        initDetailViewModel();
         setUpToolbar();
         initFab();
         bindViews();
+    }
+
+    private void initViewReferences() {
+        bodyTextView = binding.tvBody;
+        bodyProgressBar = binding.progressBarBody;
+    }
+
+    private void initDetailViewModel() {
+        DetailViewModelFactory detailFactory = new DetailViewModelFactory(
+                getActivity().getApplication(),
+                article.getId(),
+                article.getBody());
+        detailViewModel = ViewModelProviders.of(this, detailFactory).get(DetailViewModel.class);
+        observeIsSavedOffline();
+        observeParsedBody();
+    }
+
+    // TODO Implement
+    private void observeIsSavedOffline() {
+//        detailViewModel.getIsSavedOffline().observe(this, isOffline -> );
+    }
+
+    private void observeParsedBody() {
+        detailViewModel.getParsedBody().observe(this, body -> {
+            bodyTextView.setText(body);
+            hideBodyLoading();
+        });
     }
 
     private void setUpToolbar() {
@@ -116,10 +151,9 @@ public class DetailFragment extends Fragment {
     }
 
     private void bindViews() {
-        binding.author.setText(article.getAuthor());
+        binding.tvAuthor.setText(article.getAuthor());
         bindTitle();
         bindPublishingDate();
-        bindBody();
         bindPhoto();
     }
 
@@ -128,14 +162,8 @@ public class DetailFragment extends Fragment {
     }
 
     private void bindPublishingDate() {
-        binding.publishedDate.setText(
+        binding.tvPublishedDate.setText(
                 FormatDate.getFormattedDate(article.getPublishedDate())
-        );
-    }
-
-    private void bindBody() {
-        binding.articleBody.setText(
-                Html.fromHtml(article.getBody().replaceAll("(\r\n|\n)", "<br />"))
         );
     }
 
@@ -145,5 +173,16 @@ public class DetailFragment extends Fragment {
                 .placeholder(R.drawable.ic_image_icon_black_24dp)
                 .error(R.drawable.ic_image_icon_black_24dp)
                 .into(binding.ivDetailThumbnail);
+    }
+
+
+    private void displayBodyLoading() {
+        bodyTextView.setVisibility(View.GONE);
+        bodyProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideBodyLoading() {
+        bodyProgressBar.setVisibility(View.GONE);
+        bodyTextView.setVisibility(View.VISIBLE);
     }
 }

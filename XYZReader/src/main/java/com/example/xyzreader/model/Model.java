@@ -88,4 +88,9 @@ public final class Model implements IModelContract {
             Timber.e("Error deleting article");
         }
     }
+
+    @Override
+    public Single<Boolean> isArticleSavedOffline(int id) {
+        return Single.fromCallable(() -> articlesDao.isArticleSavedOffline(id) == 1);
+    }
 }

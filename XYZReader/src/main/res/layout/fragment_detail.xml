@@ -57,7 +57,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/author"
+                    android:id="@+id/tv_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_normal"
@@ -69,17 +69,17 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/published_date"
+                    android:id="@+id/tv_published_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    app:layout_constraintEnd_toEndOf="@id/author"
+                    app:layout_constraintEnd_toEndOf="@id/tv_author"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@id/author"
-                    app:layout_constraintTop_toBottomOf="@id/author" />
+                    app:layout_constraintStart_toStartOf="@id/tv_author"
+                    app:layout_constraintTop_toBottomOf="@id/tv_author" />
 
                 <TextView
-                    android:id="@+id/article_body"
+                    android:id="@+id/tv_body"
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -90,7 +90,19 @@
                     android:textColorLink="@color/colorAccent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/published_date" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_published_date" />
+
+                <!--This has the exact same constraints as the body TextView-->
+                <ProgressBar
+                    android:id="@+id/progress_bar_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_published_date"
+                    app:layout_constraintVertical_bias="0.5" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v4.widget.NestedScrollView>

@@ -15,4 +15,6 @@ public interface IModelContract {
     void saveArticleOffline(Article article);
 
     void deleteOfflineArticle(int id);
+
+    Single<Boolean> isArticleSavedOffline(int id);
 }
