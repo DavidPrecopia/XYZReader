@@ -87,12 +87,21 @@ public class DetailFragment extends Fragment {
     }
 
     private void fabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view ->
-                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
-                        .setType("text/plain")
-                        .setText("Some sample text")
-                        .getIntent(), getString(R.string.content_description_fab_share)))
-        );
+        fab.setOnClickListener(view -> {
+            Intent shareIntent = Intent.createChooser(
+                    ShareCompat.IntentBuilder.from(getActivity())
+                            .setType("text/plain")
+                            .setText(getShareArticleText())
+                            .getIntent(),
+                    getString(R.string.title_share_article)
+            );
+            startActivity(shareIntent);
+        });
+    }
+
+    private String getShareArticleText() {
+        return article.getTitle() + " by " + article.getAuthor()
+                + "\nhttps://www.articleurlplaceholder.com";
     }
 
     private void fabScrollListener(FloatingActionButton fab) {

@@ -3,8 +3,4 @@
 
     <string name="error_msg_generic">An error has occurred</string>
     <string name="error_msg_no_network_connection">No network connection</string>
-
-
-    <!--fragment_detail-->
-    <string name="content_description_fab_share">Share</string>
 </resources>
