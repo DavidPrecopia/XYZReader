@@ -104,10 +104,12 @@ public class DetailFragment extends Fragment {
 
     private void observeIsSavedOffline() {
         detailViewModel.getIsSavedOffline().observe(this, isOffline ->
-                offlineImageView.setImageResource(
-                        isOffline ? R.drawable.ic_cloud_done_black_24dp : R.drawable.ic_cloud_download_24dp
-                )
+                offlineImageView.setImageResource(getOfflineIcon(isOffline))
         );
+    }
+
+    private int getOfflineIcon(Boolean isOffline) {
+        return isOffline ? R.drawable.ic_cloud_done_black_24dp : R.drawable.ic_cloud_download_24dp;
     }
 
 

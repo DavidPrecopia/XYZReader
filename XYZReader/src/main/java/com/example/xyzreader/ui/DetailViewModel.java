@@ -17,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 final class DetailViewModel extends AndroidViewModel {
@@ -47,20 +48,25 @@ final class DetailViewModel extends AndroidViewModel {
         disposable.add(model.isArticleSavedOffline(articleId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(isSavedOfflineObserver())
+                .subscribeWith(isSavedOfflineSubscriber())
         );
     }
 
-    private DisposableSingleObserver<Boolean> isSavedOfflineObserver() {
-        return new DisposableSingleObserver<Boolean>() {
+    private DisposableSubscriber<Boolean> isSavedOfflineSubscriber() {
+        return new DisposableSubscriber<Boolean>() {
             @Override
-            public void onSuccess(Boolean aBoolean) {
-                DetailViewModel.this.isSavedOffline.setValue(aBoolean);
+            public void onNext(Boolean isOffline) {
+                DetailViewModel.this.isSavedOffline.setValue(isOffline);
             }
 
             @Override
-            public void onError(Throwable e) {
-                Timber.e(e);
+            public void onError(Throwable t) {
+                Timber.e(t);
+            }
+
+            @Override
+            public void onComplete() {
+                // N/A
             }
         };
     }
@@ -95,6 +101,7 @@ final class DetailViewModel extends AndroidViewModel {
 
 
     void saveOffline(Article article) {
+        isSavedOffline.setValue(true);
         disposable.add(Completable.fromCallable(() -> model.saveArticleOffline(article))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,6 +110,7 @@ final class DetailViewModel extends AndroidViewModel {
     }
 
     void deleteOfflineArticle(Article article) {
+        isSavedOffline.setValue(false);
         disposable.add(Completable.fromCallable(() -> model.deleteOfflineArticle(article.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

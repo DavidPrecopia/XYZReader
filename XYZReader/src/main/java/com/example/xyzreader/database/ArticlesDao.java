@@ -9,7 +9,6 @@ import com.example.xyzreader.datamodel.Article;
 import java.util.List;
 
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
