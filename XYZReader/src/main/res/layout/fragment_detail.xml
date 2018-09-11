@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -78,6 +79,16 @@
                     app:layout_constraintStart_toStartOf="@id/tv_author"
                     app:layout_constraintTop_toBottomOf="@id/tv_author" />
 
+
+                <ImageView
+                    android:id="@+id/iv_save_offline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:contentDescription="@string/content_description_save_offline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/tv_body"
                     style="?android:attr/textAppearanceMedium"
@@ -88,6 +99,7 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                     android:textColorLink="@color/colorAccent"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_published_date" />
@@ -95,14 +107,13 @@
                 <!--This has the exact same constraints as the body TextView-->
                 <ProgressBar
                     android:id="@+id/progress_bar_body"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_published_date"
-                    app:layout_constraintVertical_bias="0.5" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_published_date" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v4.widget.NestedScrollView>

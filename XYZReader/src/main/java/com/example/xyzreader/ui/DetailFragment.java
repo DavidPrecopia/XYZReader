@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,8 +32,9 @@ public class DetailFragment extends Fragment {
     private DetailViewModel detailViewModel;
 
     private Article article;
-    public static final String ARGUMENT_ID_ARTICLE_INDEX = "article_index_id";
+    private static final String ARGUMENT_ID_ARTICLE_INDEX = "article_index_id";
 
+    private ImageView offlineImageView;
     private TextView bodyTextView;
     private ProgressBar bodyProgressBar;
 
@@ -67,7 +71,7 @@ public class DetailFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
         init();
@@ -83,6 +87,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void initViewReferences() {
+        offlineImageView = binding.ivSaveOffline;
         bodyTextView = binding.tvBody;
         bodyProgressBar = binding.progressBarBody;
     }
@@ -97,10 +102,14 @@ public class DetailFragment extends Fragment {
         observeParsedBody();
     }
 
-    // TODO Implement
     private void observeIsSavedOffline() {
-//        detailViewModel.getIsSavedOffline().observe(this, isOffline -> );
+        detailViewModel.getIsSavedOffline().observe(this, isOffline ->
+                offlineImageView.setImageResource(
+                        isOffline ? R.drawable.ic_cloud_done_black_24dp : R.drawable.ic_cloud_download_24dp
+                )
+        );
     }
+
 
     private void observeParsedBody() {
         detailViewModel.getParsedBody().observe(this, body -> {
@@ -151,14 +160,19 @@ public class DetailFragment extends Fragment {
     }
 
     private void bindViews() {
-        binding.tvAuthor.setText(article.getAuthor());
         bindTitle();
+        bindAuthor();
         bindPublishingDate();
         bindPhoto();
+        setOfflineClickListener();
     }
 
     private void bindTitle() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(article.getTitle());
+    }
+
+    private void bindAuthor() {
+        binding.tvAuthor.setText(article.getAuthor());
     }
 
     private void bindPublishingDate() {
@@ -175,11 +189,23 @@ public class DetailFragment extends Fragment {
                 .into(binding.ivDetailThumbnail);
     }
 
-
-    private void displayBodyLoading() {
-        bodyTextView.setVisibility(View.GONE);
-        bodyProgressBar.setVisibility(View.VISIBLE);
+    private void setOfflineClickListener() {
+        offlineImageView.setOnClickListener(view -> {
+            if (detailViewModel.getIsSavedOffline().getValue()) {
+                detailViewModel.deleteOfflineArticle(this.article);
+                displaySnackbar(getString(R.string.message_offline_delete));
+            } else {
+                detailViewModel.saveOffline(this.article);
+                displaySnackbar(getString(R.string.message_offline_saved));
+            }
+        });
     }
+
+
+    private void displaySnackbar(String message) {
+        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+    }
+
 
     private void hideBodyLoading() {
         bodyProgressBar.setVisibility(View.GONE);

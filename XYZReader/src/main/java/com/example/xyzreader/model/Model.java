@@ -74,18 +74,24 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public void saveArticleOffline(Article article) {
+    public boolean saveArticleOffline(Article article) {
         long insertResult = articlesDao.insertArticle(article);
         if (insertResult == -1) {
             Timber.e("Error inserting article");
+            return false;
+        } else {
+            return true;
         }
     }
 
     @Override
-    public void deleteOfflineArticle(int id) {
+    public boolean deleteOfflineArticle(int id) {
         int deletionResult = articlesDao.deleteArticle(id);
         if (deletionResult == -1) {
             Timber.e("Error deleting article");
+            return false;
+        } else {
+            return true;
         }
     }
 

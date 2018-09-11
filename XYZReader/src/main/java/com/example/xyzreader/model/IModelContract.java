@@ -12,9 +12,9 @@ public interface IModelContract {
 
     Maybe<List<Article>> getOfflineArticles();
 
-    void saveArticleOffline(Article article);
+    boolean saveArticleOffline(Article article);
 
-    void deleteOfflineArticle(int id);
+    boolean deleteOfflineArticle(int id);
 
     Single<Boolean> isArticleSavedOffline(int id);
 }

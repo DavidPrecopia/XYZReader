@@ -113,7 +113,7 @@ public class ListFragment extends Fragment
      * do not support `app:srcCompat`
      */
     private void bindFabIcons() {
-        binding.fabSortOffline.setImageResource(R.drawable.ic_cloud_done_18dp);
+        binding.fabSortOffline.setImageResource(R.drawable.ic_cloud_done_white_18dp);
         binding.fabSortArticles.setImageResource(R.drawable.ic_articles_list_18dp);
     }
 
@@ -182,6 +182,7 @@ public class ListFragment extends Fragment
         errorTv.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private void displayError(String errorMessage) {

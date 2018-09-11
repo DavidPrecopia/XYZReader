@@ -7,10 +7,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.text.Html;
 
+import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.model.IModelContract;
 import com.example.xyzreader.model.Model;
 
-import io.reactivex.Scheduler;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -90,6 +91,23 @@ final class DetailViewModel extends AndroidViewModel {
                 Timber.e(e);
             }
         };
+    }
+
+
+    void saveOffline(Article article) {
+        disposable.add(Completable.fromCallable(() -> model.saveArticleOffline(article))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
+    }
+
+    void deleteOfflineArticle(Article article) {
+        disposable.add(Completable.fromCallable(() -> model.deleteOfflineArticle(article.getId()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
 
