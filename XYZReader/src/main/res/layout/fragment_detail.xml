@@ -51,6 +51,8 @@
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/margin_detail_body_start_end"
+            android:layout_marginStart="@dimen/margin_detail_body_start_end"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.constraint.ConstraintLayout
@@ -61,8 +63,6 @@
                     android:id="@+id/tv_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -94,8 +94,6 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                     android:textColorLink="@color/colorAccent"

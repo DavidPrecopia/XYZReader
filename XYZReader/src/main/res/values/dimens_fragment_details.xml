@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="app_bar_height_fragment_detail">250dp</dimen>
+    <dimen name="margin_detail_body_start_end">@dimen/margin_normal</dimen>
     <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.25</item>
 </resources>
