@@ -117,7 +117,7 @@
         </android.support.v4.widget.NestedScrollView>
 
 
-        <com.github.clans.fab.FloatingActionButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             style="@style/FloatingActionButton"
             android:layout_width="wrap_content"
@@ -125,7 +125,8 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
-            android:contentDescription="@string/content_description_fab_share" />
+            android:contentDescription="@string/content_description_fab_share"
+            app:srcCompat="@drawable/ic_share_white_24dp" />
 
 
     </android.support.design.widget.CoordinatorLayout>

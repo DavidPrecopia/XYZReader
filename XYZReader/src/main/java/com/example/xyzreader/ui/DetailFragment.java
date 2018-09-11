@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
@@ -22,7 +23,6 @@ import com.example.xyzreader.databinding.FragmentDetailBinding;
 import com.example.xyzreader.datamodel.Article;
 import com.example.xyzreader.util.FormatDate;
 import com.example.xyzreader.util.GlideApp;
-import com.github.clans.fab.FloatingActionButton;
 
 public class DetailFragment extends Fragment {
 
@@ -125,7 +125,6 @@ public class DetailFragment extends Fragment {
 
     private void initFab() {
         FloatingActionButton fab = binding.fab;
-        fab.setImageResource(R.drawable.ic_share_white_24dp);
         fabClickListener(fab);
         fabScrollListener(fab);
     }
@@ -152,9 +151,9 @@ public class DetailFragment extends Fragment {
         binding.nestedScrollView.setOnScrollChangeListener(
                 (NestedScrollView.OnScrollChangeListener) (nestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (scrollY > oldScrollY) {
-                        fab.hide(true);
+                        fab.hide();
                     } else if (scrollY < oldScrollY) {
-                        fab.show(true);
+                        fab.show();
                     }
                 });
     }
