@@ -13,7 +13,6 @@ import com.example.xyzreader.util.NetworkStatusUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import timber.log.Timber;
@@ -97,8 +96,8 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public Flowable<Boolean> isArticleSavedOffline(int id) {
-        return Flowable.fromCallable(() -> articlesDao.isArticleSavedOffline(id))
-                .flatMap(result -> Flowable.just(result != 0));
+    public Single<Boolean> isArticleSavedOffline(int id) {
+        return Single.fromCallable(() -> articlesDao.isArticleSavedOffline(id))
+                .flatMap(result -> Single.just(result != 0));
     }
 }

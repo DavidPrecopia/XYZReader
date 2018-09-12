@@ -17,7 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 final class DetailViewModel extends AndroidViewModel {
@@ -52,21 +51,16 @@ final class DetailViewModel extends AndroidViewModel {
         );
     }
 
-    private DisposableSubscriber<Boolean> isSavedOfflineSubscriber() {
-        return new DisposableSubscriber<Boolean>() {
+    private DisposableSingleObserver<Boolean> isSavedOfflineSubscriber() {
+        return new DisposableSingleObserver<Boolean>() {
             @Override
-            public void onNext(Boolean isOffline) {
+            public void onSuccess(Boolean isOffline) {
                 DetailViewModel.this.isSavedOffline.setValue(isOffline);
             }
 
             @Override
-            public void onError(Throwable t) {
-                Timber.e(t);
-            }
-
-            @Override
-            public void onComplete() {
-                // N/A
+            public void onError(Throwable e) {
+                Timber.e(e);
             }
         };
     }
