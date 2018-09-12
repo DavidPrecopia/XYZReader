@@ -5,7 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-public class ArticleViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+class ArticleViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     @NonNull
     private final Application application;

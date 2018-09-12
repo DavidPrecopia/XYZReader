@@ -12,21 +12,21 @@ public class Article {
 
     @PrimaryKey
     @ColumnInfo(name = DatabaseContract.COLUMN_NAME_ID)
-    private int id;
+    private final int id;
 
-    private String title;
-    private String author;
+    private final String title;
+    private final String author;
 
     @SerializedName("published_date")
     @ColumnInfo(name = DatabaseContract.COLUMN_NAME_PUBLISHED_DATE)
-    private String publishedDate;
+    private final String publishedDate;
 
-    private String body;
+    private final String body;
 
     @SerializedName("thumb")
-    private String thumbnailUrl;
+    private final String thumbnailUrl;
     @SerializedName("photo")
-    private String photoUrl;
+    private final String photoUrl;
 
 
     public Article(int id, String title, String author, String publishedDate, String body, String thumbnailUrl, String photoUrl) {

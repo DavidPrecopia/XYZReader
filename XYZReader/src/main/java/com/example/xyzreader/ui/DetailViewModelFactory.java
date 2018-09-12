@@ -2,7 +2,6 @@ package com.example.xyzreader.ui;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
@@ -18,13 +17,14 @@ final class DetailViewModelFactory extends ViewModelProvider.AndroidViewModelFac
      *
      * @param application an application to pass in {@link AndroidViewModel}
      */
-    public DetailViewModelFactory(@NonNull Application application, int articleId, String body) {
+    DetailViewModelFactory(@NonNull Application application, int articleId, String body) {
         super(application);
         this.application = application;
         this.articleId = articleId;
         this.body = body;
     }
 
+    @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public DetailViewModel create(@NonNull Class modelClass) {

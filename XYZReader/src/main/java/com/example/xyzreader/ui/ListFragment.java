@@ -198,7 +198,7 @@ public class ListFragment extends Fragment
 
         private final List<Article> articlesList;
 
-        private OnClickListFragment onClickListFragment;
+        private final OnClickListFragment onClickListFragment;
 
 
         ArticleAdapter(List<Article> articlesList, OnClickListFragment onClickListFragment) {
@@ -231,7 +231,7 @@ public class ListFragment extends Fragment
 
         class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-            private ListItemArticleBinding binding;
+            private final ListItemArticleBinding binding;
 
             ArticleViewHolder(ListItemArticleBinding binding) {
                 super(binding.getRoot());
