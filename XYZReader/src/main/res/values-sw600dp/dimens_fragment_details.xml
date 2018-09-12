@@ -1,3 +1,4 @@
 <resources>
+    <dimen name="margin_detail_body_start_end">@dimen/margin_extra_large</dimen>
     <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.3</item>
 </resources>
