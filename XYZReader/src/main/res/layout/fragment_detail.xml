@@ -84,8 +84,9 @@
                     android:id="@+id/iv_save_offline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_normal"
                     android:contentDescription="@string/content_description_save_offline"
+                    android:padding="@dimen/margin_normal"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_published_date"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
