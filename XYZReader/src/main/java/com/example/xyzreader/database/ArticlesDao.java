@@ -8,14 +8,14 @@ import com.example.xyzreader.datamodel.Article;
 
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.Flowable;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface ArticlesDao {
     @Query("SELECT * FROM " + DatabaseContract.TABLE_NAME_ARTICLES)
-    Maybe<List<Article>> getAllArticles();
+    Flowable<List<Article>> getAllArticles();
 
     @Insert(onConflict = REPLACE)
     long insertArticle(Article article);

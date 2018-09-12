@@ -13,7 +13,7 @@ import com.example.xyzreader.util.NetworkStatusUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import timber.log.Timber;
 
@@ -69,7 +69,7 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public Maybe<List<Article>> getOfflineArticles() {
+    public Flowable<List<Article>> getOfflineArticles() {
         return articlesDao.getAllArticles();
     }
 
