@@ -122,7 +122,9 @@ public class DetailFragment extends Fragment {
 
     private void setUpToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (! getContext().getResources().getBoolean(R.bool.is_master_detail_layout)) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initFab() {

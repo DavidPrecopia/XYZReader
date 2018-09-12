@@ -16,11 +16,16 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
 
+    private static final int INVALID_INDEX = -1;
+    // This is static to ensure its value does not reset on rotation
+    private static int articleIndex = INVALID_INDEX;
+
     private int singlePaneHolderId;
 
     private boolean masterDetailLayout;
     private int masterHolderId;
     private int detailHolderId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     private void init(boolean newActivity) {
         initFields();
-        initFragments(newActivity);
+        initLayout(newActivity);
     }
 
     private void initFields() {
@@ -45,17 +50,40 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void initFragments(boolean newActivity) {
-        if (masterDetailLayout) {
-            addFragmentNoBackstack(masterHolderId, ListFragment.getInstance());
-        } else if (newActivity) {
-            addFragmentNoBackstack(singlePaneHolderId, ListFragment.getInstance());
+
+    private void initLayout(boolean newActivity) {
+        if (isSinglePaneAndNew(newActivity)) {
+            initSinglePaneLayout();
+        } else if (masterDetailLayout) {
+            initDualPaneLayout();
+        } else if (! newActivity) {
+            initDualToSinglePaneLayout();
+        }
+    }
+
+    private void initSinglePaneLayout() {
+        addFragmentNoBackstack(singlePaneHolderId, ListFragment.getInstance());
+    }
+
+    private void initDualPaneLayout() {
+        addFragmentNoBackstack(masterHolderId, ListFragment.getInstance());
+        if (articleIndex != INVALID_INDEX) {
+            openDetailFragment(articleIndex);
+        }
+    }
+
+    private void initDualToSinglePaneLayout() {
+        if (articleIndex != INVALID_INDEX) {
+            openDetailFragment(articleIndex);
+        } else {
+            initSinglePaneLayout();
         }
     }
 
 
     @Override
     public void openDetailFragment(int articleIndex) {
+        MainActivity.articleIndex = articleIndex;
         if (masterDetailLayout) {
             binding.tvHolderDetailMessage.setVisibility(View.GONE);
             addFragmentNoBackstack(detailHolderId, DetailFragment.newInstance(articleIndex));
@@ -76,6 +104,11 @@ public class MainActivity extends AppCompatActivity
                 .replace(viewId, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+
+    private boolean isSinglePaneAndNew(boolean newActivity) {
+        return ! masterDetailLayout && newActivity;
     }
 
 
