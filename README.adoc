@@ -1,3 +1,11 @@
-# XYZ Reader
+This app displays a set list of articles that can be saved offline in an SQL database.
 
-The XYZ Reader project in Udacity's Android Nanodegree.
+In this project I had to modernize an existing app that was using legacy libraries and numerous hacks. Additionally, I had to fix several bugs per “user” feedback. That included making the app more accessible by increasing the contrast and size of the text.
+
+Some of the improvements I had to make included:
+
+- Migrate the SQL database from the bloated and notorious Content Provider, to Google’s Room library.
+- Update it layouts and styles to Google current design standard, Material Design.
+- Remove the severe frame-drop when scrolling through the list of articles and loading the article itself.
+- I achieved this by via GPU profiling.
+- Restore a user’s scroll position when they rotate their device.
